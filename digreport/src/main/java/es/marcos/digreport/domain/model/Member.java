@@ -1,4 +1,4 @@
-package es.marcos.digreport.domain.entities;
+package es.marcos.digreport.domain.model;
 
 import es.marcos.digreport.domain.enums.UserRole;
 import lombok.Getter;
@@ -16,23 +16,25 @@ public class Member {
     private String surname2; // opcional
     private String email;
     private String dni;
-    private String movil;
+    private String password;
+    private String mobile;
     private UserRole role;
-    private LocalDateTime registerdate;
+    private LocalDateTime registerDate;
     private String ccaa;
 
     public Member(Long id, String name, String surname1, String surname2,
-                  String email, String dni, String movil, UserRole role,
-                  LocalDateTime registerdate, String ccaa) {
+                  String email, String dni, String password, String mobile, UserRole role,
+                  LocalDateTime registerDate, String ccaa) {
         this.id = id;
         this.name = name;
         this.surname1 = surname1;
         this.surname2 = surname2;
         this.email = email;
         this.dni = dni;
-        this.movil = movil;
+        this.password = password;
+        this.mobile = mobile;
         this.role = role;
-        this.registerdate = registerdate;
+        this.registerDate = registerDate;
         this.ccaa = ccaa;
     }
 }

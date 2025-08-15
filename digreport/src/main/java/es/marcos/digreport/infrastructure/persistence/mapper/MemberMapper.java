@@ -1,11 +1,12 @@
-package es.marcos.digreport.infrastructure.repository.mapper;
+package es.marcos.digreport.infrastructure.persistence.mapper;
 
-import es.marcos.digreport.domain.entities.Member;
-import es.marcos.digreport.infrastructure.repository.entities.MemberEntityJpa;
+import es.marcos.digreport.domain.model.Member;
+import es.marcos.digreport.infrastructure.persistence.entities.MemberEntityJpa;
 
 public class MemberMapper {
 
     public static MemberEntityJpa toEntity(Member member) {
+        if (member == null) return null;
         return MemberEntityJpa.builder()
                 .id(member.getId())
                 .name(member.getName())
@@ -13,14 +14,16 @@ public class MemberMapper {
                 .surname2(member.getSurname2())
                 .email(member.getEmail())
                 .dni(member.getDni())
-                .movil(member.getMovil())
+                .password(member.getPassword())
+                .mobile(member.getMobile())
                 .role(member.getRole())
-                .registerdate(member.getRegisterdate())
+                .registerDate(member.getRegisterDate())
                 .ccaa(member.getCcaa())
                 .build();
     }
 
     public static Member toDomain(MemberEntityJpa entity) {
+        if (entity == null) return null;
         return new Member(
                 entity.getId(),
                 entity.getName(),
@@ -28,9 +31,10 @@ public class MemberMapper {
                 entity.getSurname2(),
                 entity.getEmail(),
                 entity.getDni(),
-                entity.getMovil(),
+                entity.getPassword(),
+                entity.getMobile(),
                 entity.getRole(),
-                entity.getRegisterdate(),
+                entity.getRegisterDate(),
                 entity.getCcaa()
         );
     }
