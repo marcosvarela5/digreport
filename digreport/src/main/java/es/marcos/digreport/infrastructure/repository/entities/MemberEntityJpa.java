@@ -1,6 +1,7 @@
 package es.marcos.digreport.infrastructure.repository.entities;
 
 
+import es.marcos.digreport.domain.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,7 @@ public class MemberEntityJpa {
     private String email;
     private String dni;
     private String movil;
-    private String role;
+    private UserRole role;
     private LocalDateTime registerdate;
     private String ccaa;
 }
