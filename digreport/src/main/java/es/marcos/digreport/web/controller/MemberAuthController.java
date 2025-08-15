@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberAuthController {
 
     private final MemberAuthService memberAuthService;
+
+
+
     public MemberAuthController(MemberAuthService memberAuthService) {
         this.memberAuthService = memberAuthService;
     }
