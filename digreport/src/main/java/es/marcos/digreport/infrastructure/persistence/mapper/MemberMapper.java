@@ -2,7 +2,10 @@ package es.marcos.digreport.infrastructure.persistence.mapper;
 
 import es.marcos.digreport.domain.model.Member;
 import es.marcos.digreport.infrastructure.persistence.entities.MemberEntityJpa;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class MemberMapper {
 
     public static MemberEntityJpa toEntity(Member member) {
