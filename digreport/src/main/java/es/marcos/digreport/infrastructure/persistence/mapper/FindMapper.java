@@ -1,0 +1,41 @@
+package es.marcos.digreport.infrastructure.persistence.mapper;
+
+import es.marcos.digreport.domain.model.Find;
+import es.marcos.digreport.infrastructure.persistence.entities.FindEntityJpa;
+import org.springframework.stereotype.Component;
+
+@Component
+public class FindMapper {
+
+    public static FindEntityJpa toEntity(Find find) {
+        if (find == null) return null;
+        return FindEntityJpa.builder()
+                .id(find.getId())
+                .discoveredAt(find.getDiscoveredAt())
+                .latitude(find.getLatitude())
+                .longitude(find.getLongitude())
+                .reporterId(find.getReporterId())
+                .description(find.getDescription())
+                .status(find.getStatus())
+                .priority(find.getPriority())
+                .build();
+    }
+
+    public static Find toDomain(FindEntityJpa entity) {
+        if (entity == null) return null;
+
+        Find find = new Find(
+                entity.getId(),
+                entity.getDiscoveredAt(),
+                entity.getLatitude(),
+                entity.getLongitude(),
+                entity.getReporterId(),
+                entity.getDescription()
+        );
+
+        find.setStatus(entity.getStatus());
+        find.setPriority(entity.getPriority());
+
+        return find;
+    }
+}
