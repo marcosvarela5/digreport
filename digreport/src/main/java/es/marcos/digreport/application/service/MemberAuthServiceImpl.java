@@ -50,14 +50,25 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         requireNonBlank(userRegistrationCommand.getName(), "name");
         requireNonBlank(userRegistrationCommand.getSurname1(), "surname1");
         requireNonBlank(userRegistrationCommand.getEmail(), "email");
+        requireNonBlank(userRegistrationCommand.getConfirmEmail(), "confirmEmail");   // <- nuevo
         requireNonBlank(userRegistrationCommand.getDni(), "dni");
         requireNonBlank(userRegistrationCommand.getPassword(), "password");
+        requireNonBlank(userRegistrationCommand.getConfirmPassword(), "confirmPassword"); // <- nuevo
         requireNonBlank(userRegistrationCommand.getMobile(), "mobile");
         requireNonBlank(userRegistrationCommand.getCcaa(), "ccaa");
 
-        //normalize fields
+        // normalize fields
         String email = userRegistrationCommand.getEmail().trim().toLowerCase();
+        String confirmEmail = userRegistrationCommand.getConfirmEmail().trim().toLowerCase(); // <- normalizado
         String dni = userRegistrationCommand.getDni().trim().toUpperCase();
+
+
+        if (!email.equals(confirmEmail)) {
+            throw new ValidationException("Emails do not match");
+        }
+        if (!userRegistrationCommand.getPassword().equals(userRegistrationCommand.getConfirmPassword())) {
+            throw new ValidationException("Passwords do not match");
+        }
 
         if (!isValidEmail(email)) {
             throw new ValidationException("Invalid email format");
@@ -66,12 +77,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             throw new ValidationException("Invalid DNI format (expected 8 digits + letter)");
         }
 
-        memberRepositoryPort.findByEmail(email).ifPresent(m -> {
-            throw new DuplicatedEmailException(email);
-        });
-        memberRepositoryPort.findByDni(dni).ifPresent(m -> {
-            throw new DuplicatedDniException(dni);
-        });
+        memberRepositoryPort.findByEmail(email).ifPresent(m -> { throw new DuplicatedEmailException(email); });
+        memberRepositoryPort.findByDni(dni).ifPresent(m -> { throw new DuplicatedDniException(dni); });
 
         String hashedPassword = passwordEncoder.encode(userRegistrationCommand.getPassword());
 
@@ -90,6 +97,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         );
         return memberRepositoryPort.save(member);
     }
+
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {

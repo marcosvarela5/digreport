@@ -37,4 +37,13 @@ public class UserRegistrationCommand{
     private String password;
     @NotBlank
     private String ccaa;
+
+    @NotBlank
+    @Email
+    @Size(max = 100)
+    private String confirmEmail;
+
+    @NotBlank
+    @Size(min = 6, max = 50)
+    private String confirmPassword;
 }

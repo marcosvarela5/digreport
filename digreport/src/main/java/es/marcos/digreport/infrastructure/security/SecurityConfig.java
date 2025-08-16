@@ -29,12 +29,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Público: registro y login
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
-                        // Protegido: solo ROLE_AUTHORITY
+
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").anonymous()
+                        .requestMatchers("/api/auth/login").anonymous()
+                        .requestMatchers("/api/auth/refresh").permitAll()
+
                         .requestMatchers("/api/authorities/**").hasRole(UserRole.AUTHORITY.name())
-                        // Todo lo demás requiere autenticación
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)
