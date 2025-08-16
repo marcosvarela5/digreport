@@ -1,18 +1,22 @@
 package es.marcos.digreport.application.dto.auth;
 
-import es.marcos.digreport.application.dto.entities.MemberDto;
-import es.marcos.digreport.domain.model.Member;
+import es.marcos.digreport.domain.enums.UserRole;
+
 import lombok.Getter;
 
 @Getter
 public class LoginResponse {
 
-    private String token;
-    private MemberDto member;
 
-    public LoginResponse(String token, MemberDto member) {
+    private String token;
+    private String username;
+    private UserRole role;
+
+
+    public LoginResponse(String token, String username, UserRole role) {
         this.token = token;
-        this.member = member;
+        this.username = username;
+        this.role = role;
     }
 
 

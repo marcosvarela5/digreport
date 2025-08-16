@@ -1,5 +1,7 @@
 package es.marcos.digreport.web.controller;
 
+import es.marcos.digreport.application.dto.auth.LoginRequest;
+import es.marcos.digreport.application.dto.auth.LoginResponse;
 import es.marcos.digreport.application.port.in.MemberAuthService;
 import es.marcos.digreport.application.port.in.command.UserRegistrationCommand;
 import jakarta.validation.Valid;
@@ -30,5 +32,11 @@ public class MemberAuthController {
         }
         memberAuthService.registerMember(command);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest){
+        LoginResponse login = memberAuthService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(login);
     }
 }
