@@ -1,13 +1,11 @@
 package es.marcos.digreport.domain.model;
 
-import es.marcos.digreport.domain.enums.Priority;
-import es.marcos.digreport.domain.enums.ValidationStatus;
+import es.marcos.digreport.domain.enums.FindPriority;
+import es.marcos.digreport.domain.enums.FindValidationStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,8 +23,8 @@ public class Find {
     private String description;
 
 
-    private ValidationStatus status = ValidationStatus.PENDING;
-    private Priority priority = Priority.MEDIUM;
+    private FindValidationStatus status = FindValidationStatus.PENDING;
+    private FindPriority findPriority = FindPriority.MEDIUM;
 
     //private List<FindImage> images = new ArrayList<>();
     //private List<FindReviewNote> reviewNotes = new ArrayList<>();

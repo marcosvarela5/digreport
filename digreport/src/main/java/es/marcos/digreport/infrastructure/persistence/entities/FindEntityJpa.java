@@ -1,7 +1,7 @@
 package es.marcos.digreport.infrastructure.persistence.entities;
 
-import es.marcos.digreport.domain.enums.Priority;
-import es.marcos.digreport.domain.enums.ValidationStatus;
+import es.marcos.digreport.domain.enums.FindPriority;
+import es.marcos.digreport.domain.enums.FindValidationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,11 +40,11 @@ public class FindEntityJpa {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private ValidationStatus status = ValidationStatus.PENDING;
+    private FindValidationStatus status = FindValidationStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false, length = 20)
-    private Priority priority = Priority.MEDIUM;
+    private FindPriority findPriority = FindPriority.MEDIUM;
 
 
     /* ====================  ==================== */

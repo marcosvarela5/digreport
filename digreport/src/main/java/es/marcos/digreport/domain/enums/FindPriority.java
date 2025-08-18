@@ -1,5 +1,5 @@
 package es.marcos.digreport.domain.enums;
 
-public enum Priority {
+public enum FindPriority {
     LOW, MEDIUM, HIGH, CRITICAL
 }

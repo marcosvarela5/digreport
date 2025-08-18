@@ -17,7 +17,7 @@ public class FindMapper {
                 .reporterId(find.getReporterId())
                 .description(find.getDescription())
                 .status(find.getStatus())
-                .priority(find.getPriority())
+                .findPriority(find.getFindPriority())
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class FindMapper {
         );
 
         find.setStatus(entity.getStatus());
-        find.setPriority(entity.getPriority());
+        find.setFindPriority(entity.getFindPriority());
 
         return find;
     }
