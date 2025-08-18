@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -48,14 +46,6 @@ public class FindEntityJpa {
     @Column(name = "priority", nullable = false, length = 20)
     private Priority priority = Priority.MEDIUM;
 
-
-    @OneToMany(mappedBy = "find", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<FindImageEntityJpa> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "find", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<FindReviewNoteEntityJpa> reviewNotes = new ArrayList<>();
 
     /* ====================  ==================== */
 
