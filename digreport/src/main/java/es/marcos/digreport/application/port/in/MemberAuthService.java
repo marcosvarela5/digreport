@@ -10,4 +10,6 @@ public interface MemberAuthService {
     Member registerMember(UserRegistrationCommand userRegistrationCommand);
 
     LoginResponse login(LoginRequest loginRequest);
+
+
 }

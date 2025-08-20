@@ -4,13 +4,14 @@ import es.marcos.digreport.application.port.out.FindRepositoryPort;
 import es.marcos.digreport.domain.model.Find;
 import es.marcos.digreport.infrastructure.persistence.entities.FindEntityJpa;
 import es.marcos.digreport.infrastructure.persistence.mapper.FindMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Repository
 public class FindRepositoryAdapter implements FindRepositoryPort {
 
     private final SpringDataFindRepository repository;

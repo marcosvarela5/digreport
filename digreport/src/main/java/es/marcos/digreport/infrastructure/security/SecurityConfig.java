@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").anonymous()
-                        .requestMatchers("/api/auth/login").anonymous()
+                        .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/refresh").permitAll()
 
                         .requestMatchers("/api/authorities/**").hasRole(UserRole.AUTHORITY.name())
