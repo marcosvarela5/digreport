@@ -2,6 +2,7 @@ package es.marcos.digreport.application.service;
 
 import es.marcos.digreport.application.dto.auth.LoginRequest;
 import es.marcos.digreport.application.dto.auth.LoginResponse;
+import es.marcos.digreport.application.dto.entities.MemberDto;
 import es.marcos.digreport.application.port.in.MemberAuthService;
 import es.marcos.digreport.application.port.in.command.UserRegistrationCommand;
 import es.marcos.digreport.application.port.out.MemberRepositoryPort;
@@ -11,7 +12,7 @@ import es.marcos.digreport.domain.exception.DuplicatedEmailException;
 import es.marcos.digreport.domain.exception.ValidationException;
 import es.marcos.digreport.domain.model.Member;
 import es.marcos.digreport.infrastructure.security.jwt.JwtService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static es.marcos.digreport.domain.util.MemberUtils.*;
 
@@ -132,6 +134,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             System.err.println("Authentication error: " + e.getMessage());
             throw new BadCredentialsException("Email or password incorrect");
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<MemberDto> getOwnInfo(String email) {
+        return memberRepositoryPort.findByEmail(email)
+                .map(MemberDto::fromDomain);
     }
 }
 
