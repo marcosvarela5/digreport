@@ -8,7 +8,6 @@ import es.marcos.digreport.domain.exception.DuplicatedDniException;
 import es.marcos.digreport.domain.exception.DuplicatedEmailException;
 import es.marcos.digreport.domain.exception.ValidationException;
 import es.marcos.digreport.domain.model.Member;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,6 @@ public class MemberSelfServiceImpl implements MemberSelfService {
 
     private final MemberRepositoryPort memberRepositoryPort;
 
-    @Autowired
     public MemberSelfServiceImpl(MemberRepositoryPort memberRepositoryPort) {
         this.memberRepositoryPort = memberRepositoryPort;
     }
