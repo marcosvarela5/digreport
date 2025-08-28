@@ -4,7 +4,7 @@
     <div class="register-card">
       <div class="register-header">
         <h1 class="register-title">DIGREPORT</h1>
-        <p class="register-subtitle">Registro en el sistema de gestión patrimonial</p>
+        <p class="register-subtitle">Registro</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="register-form">
