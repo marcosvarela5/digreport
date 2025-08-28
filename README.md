@@ -73,4 +73,15 @@ npm run dev
 
 ## 📜 Licencia
 
-Este proyecto forma parte del Trabajo de Fin de Grado de Marcos Varela y su uso está restringido al contexto académico correspondiente.
+Este proyecto forma parte del Trabajo de Fin de Grado de Marcos Varela y su uso está restringido al contexto académico correspondiente.  
+
+
+  
+## 🖥️ Capturas de pantalla
+
+### Home
+<img src="./docs/digreport_home.png" width="750">
+
+
+### Registro
+<img src="./docs/digreport_registerform.png" width="750">
