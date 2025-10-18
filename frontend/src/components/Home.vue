@@ -15,8 +15,15 @@
               <a href="#inicio" class="nav-link">Inicio</a>
               <a href="#sobre-proyecto" class="nav-link">Proyecto</a>
               <a href="#como-funciona" class="nav-link">Cómo funciona</a>
-              <a href="/login" class="btn btn-primary">Iniciar Sesión</a>
-              <a href="/register" class="btn btn-secondary">Registro</a>
+
+              <!-- Mostrar botones o menú de usuario según autenticación -->
+              <template v-if="authStore.isAuthenticated">
+                <UserMenu />
+              </template>
+              <template v-else>
+                <a href="/login" class="btn btn-primary">Iniciar Sesión</a>
+                <a href="/register" class="btn btn-secondary">Registro</a>
+              </template>
             </div>
           </div>
 
@@ -35,8 +42,15 @@
           <a href="#inicio" class="mobile-link" @click="toggleMenu">Inicio</a>
           <a href="#sobre-proyecto" class="mobile-link" @click="toggleMenu">El Proyecto</a>
           <a href="#como-funciona" class="mobile-link" @click="toggleMenu">Cómo Funciona</a>
-          <a href="/login" class="mobile-link primary" @click="toggleMenu">Iniciar Sesión</a>
-          <a href="/register" class="mobile-link secondary" @click="toggleMenu">Registro</a>
+
+          <template v-if="authStore.isAuthenticated">
+            <router-link to="/profile" class="mobile-link" @click="toggleMenu">Mi Perfil</router-link>
+            <button @click="handleLogout" class="mobile-link logout">Cerrar Sesión</button>
+          </template>
+          <template v-else>
+            <router-link to="/login" class="mobile-link primary" @click="toggleMenu">Iniciar Sesión</router-link>
+            <router-link to="/register" class="mobile-link secondary" @click="toggleMenu">Registro</router-link>
+          </template>
         </div>
       </div>
     </nav>
@@ -237,12 +251,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import UserMenu from './UserMenu.vue'
 import './Home.css'
 
+const router = useRouter()
+const authStore = useAuthStore()
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
+
+const handleLogout = () => {
+  authStore.logout()
+  isMenuOpen.value = false
+  router.push('/')
+}
+
+// Verificar estado de autenticación al montar
+onMounted(() => {
+  authStore.checkAuthStatus()
+})
 </script>

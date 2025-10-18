@@ -16,6 +16,53 @@
     padding: 0 20px;
 }
 
+/* Transiciones suaves para el navbar */
+.nav-links {
+    transition: all 0.3s ease;
+}
+
+/* Animación fade-in para botones y menú de usuario */
+.nav-links .btn,
+.nav-links .user-menu {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Transición suave para el menú móvil */
+.mobile-menu {
+    transition: all 0.3s ease;
+}
+
+.mobile-link {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Animación para cuando aparecen/desaparecen elementos en mobile */
+.mobile-menu .mobile-link {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* Navigation */
 .navbar {
     background: #fff;
@@ -420,6 +467,21 @@
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.8);
+}
+
+/* Estilo para botón de logout en menú móvil */
+.mobile-link.logout {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--error-color);
+}
+
+.mobile-link.logout:hover {
+    background-color: #fef2f2;
 }
 
 /* Responsive */

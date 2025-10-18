@@ -23,8 +23,8 @@
                   :class="{ error: errors.name }"
                   placeholder="Tu nombre"
                   maxlength="100"
-                  required
                   @input="clearFieldError('name')"
+                  @blur="validateField('name')"
               />
               <span v-if="errors.name" class="form-error">{{ errors.name }}</span>
             </div>
@@ -39,8 +39,8 @@
                   :class="{ error: errors.surname1 }"
                   placeholder="Primer apellido"
                   maxlength="100"
-                  required
                   @input="clearFieldError('surname1')"
+                  @blur="validateField('surname1')"
               />
               <span v-if="errors.surname1" class="form-error">{{ errors.surname1 }}</span>
             </div>
@@ -69,8 +69,8 @@
                   :class="{ error: errors.dni }"
                   placeholder="12345678A"
                   maxlength="20"
-                  required
                   @input="clearFieldError('dni')"
+                  @blur="validateField('dni')"
               />
               <span v-if="errors.dni" class="form-error">{{ errors.dni }}</span>
             </div>
@@ -85,8 +85,8 @@
                   :class="{ error: errors.mobile }"
                   placeholder="666777888"
                   maxlength="20"
-                  required
                   @input="clearFieldError('mobile')"
+                  @blur="validateField('mobile')"
               />
               <span v-if="errors.mobile" class="form-error">{{ errors.mobile }}</span>
             </div>
@@ -99,8 +99,8 @@
                 v-model="form.ccaa"
                 class="form-input"
                 :class="{ error: errors.ccaa }"
-                required
                 @change="clearFieldError('ccaa')"
+                @blur="validateField('ccaa')"
             >
               <option value="">Selecciona tu comunidad autónoma</option>
               <option value="Andalucía">Andalucía</option>
@@ -142,8 +142,8 @@
                   :class="{ error: errors.email }"
                   placeholder="tu@email.com"
                   maxlength="100"
-                  required
                   @input="clearFieldError('email')"
+                  @blur="validateField('email')"
               />
               <span v-if="errors.email" class="form-error">{{ errors.email }}</span>
             </div>
@@ -158,8 +158,8 @@
                   :class="{ error: errors.confirmEmail }"
                   placeholder="Repite tu email"
                   maxlength="100"
-                  required
                   @input="clearFieldError('confirmEmail')"
+                  @blur="validateField('confirmEmail')"
               />
               <span v-if="errors.confirmEmail" class="form-error">{{ errors.confirmEmail }}</span>
             </div>
@@ -177,8 +177,8 @@
                     :class="{ error: errors.password }"
                     placeholder="Mínimo 6 caracteres"
                     maxlength="50"
-                    required
                     @input="clearFieldError('password')"
+                    @blur="validateField('password')"
                 />
                 <button
                     type="button"
@@ -202,8 +202,8 @@
                     :class="{ error: errors.confirmPassword }"
                     placeholder="Repite tu contraseña"
                     maxlength="50"
-                    required
                     @input="clearFieldError('confirmPassword')"
+                    @blur="validateField('confirmPassword')"
                 />
                 <button
                     type="button"
@@ -227,7 +227,6 @@
                   type="checkbox"
                   class="checkbox-input"
                   :class="{ error: errors.acceptTerms }"
-                  required
               />
               <span class="checkbox-label">
                 Acepto los
@@ -346,6 +345,80 @@ const errors = reactive({
   acceptTerms: ''
 })
 
+const validateField = (field: keyof typeof errors) => {
+  switch(field) {
+    case 'name':
+      if (!form.name.trim()) {
+        errors.name = 'El nombre es obligatorio'
+      } else if (form.name.trim().length < 2) {
+        errors.name = 'El nombre debe tener al menos 2 caracteres'
+      }
+      break
+
+    case 'surname1':
+      if (!form.surname1.trim()) {
+        errors.surname1 = 'El primer apellido es obligatorio'
+      } else if (form.surname1.trim().length < 2) {
+        errors.surname1 = 'El primer apellido debe tener al menos 2 caracteres'
+      }
+      break
+
+    case 'email':
+      if (!form.email) {
+        errors.email = 'El email es obligatorio'
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        errors.email = 'El formato del email no es válido'
+      }
+      break
+
+    case 'confirmEmail':
+      if (!form.confirmEmail) {
+        errors.confirmEmail = 'Confirma tu email'
+      } else if (form.email !== form.confirmEmail) {
+        errors.confirmEmail = 'Los emails no coinciden'
+      }
+      break
+
+    case 'dni':
+      if (!form.dni) {
+        errors.dni = 'El DNI es obligatorio'
+      } else if (!/^\d{8}[A-Za-z]$/.test(form.dni)) {
+        errors.dni = 'El formato del DNI no es válido (8 dígitos + letra)'
+      }
+      break
+
+    case 'mobile':
+      if (!form.mobile) {
+        errors.mobile = 'El teléfono móvil es obligatorio'
+      } else if (!/^[679]\d{8}$/.test(form.mobile)) {
+        errors.mobile = 'El formato del móvil no es válido'
+      }
+      break
+
+    case 'password':
+      if (!form.password) {
+        errors.password = 'La contraseña es obligatoria'
+      } else if (form.password.length < 6) {
+        errors.password = 'La contraseña debe tener al menos 6 caracteres'
+      }
+      break
+
+    case 'confirmPassword':
+      if (!form.confirmPassword) {
+        errors.confirmPassword = 'Confirma tu contraseña'
+      } else if (form.password !== form.confirmPassword) {
+        errors.confirmPassword = 'Las contraseñas no coinciden'
+      }
+      break
+
+    case 'ccaa':
+      if (!form.ccaa) {
+        errors.ccaa = 'Selecciona tu comunidad autónoma'
+      }
+      break
+  }
+}
+
 const validateForm = () => {
   // Reset errors
   Object.keys(errors).forEach(key => {
@@ -354,7 +427,7 @@ const validateForm = () => {
 
   let isValid = true
 
-  // Validaciones básicas
+  // Validar todos los campos
   if (!form.name.trim()) {
     errors.name = 'El nombre es obligatorio'
     isValid = false
@@ -463,7 +536,7 @@ const clearFieldError = (field: keyof typeof errors) => {
 // Redirigir si ya está autenticado
 onMounted(() => {
   if (authStore.isAuthenticated) {
-    router.push('/dashboard')
+    router.push('/')
   }
 })
 </script>
