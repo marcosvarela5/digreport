@@ -1,12 +1,12 @@
 package es.marcos.digreport.infrastructure.persistence.repository;
 
 import es.marcos.digreport.application.port.out.FindRepositoryPort;
+import es.marcos.digreport.domain.enums.FindValidationStatus;
 import es.marcos.digreport.domain.model.Find;
 import es.marcos.digreport.infrastructure.persistence.entities.FindEntityJpa;
 import es.marcos.digreport.infrastructure.persistence.mapper.FindMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,10 @@ public class FindRepositoryAdapter implements FindRepositoryPort {
     @Override
     @Transactional(readOnly = true)
     public List<Find> findAll() {
-        return repository.findAll().stream().map(FindMapper::toDomain).toList();
+        return repository.findAllByOrderByDiscoveredAtDesc()
+                .stream()
+                .map(FindMapper::toDomain)
+                .toList();
     }
 
     @Override
@@ -46,12 +49,25 @@ public class FindRepositoryAdapter implements FindRepositoryPort {
     }
 
     @Override
-    public Optional<Find> findByReporterId(Long id) {
-        return repository.findByReporterId(id).map(FindMapper::toDomain);
+    @Transactional(readOnly = true)
+    public List<Find> findByReporterId(Long reporterId) {
+        return repository.findByReporterIdOrderByDiscoveredAtDesc(reporterId)
+                .stream()
+                .map(FindMapper::toDomain)
+                .toList();
     }
 
     @Override
-    public Boolean existsByReporterId(Long id) {
-        return repository.findByReporterId(id).isPresent();
+    @Transactional(readOnly = true)
+    public List<Find> findByStatus(FindValidationStatus status) {
+        return repository.findByStatusOrderByDiscoveredAtDesc(status)
+                .stream()
+                .map(FindMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public Boolean existsByReporterId(Long reporterId) {
+        return repository.existsByReporterId(reporterId);
     }
 }

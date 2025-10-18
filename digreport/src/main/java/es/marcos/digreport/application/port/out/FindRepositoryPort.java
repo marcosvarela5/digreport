@@ -1,7 +1,7 @@
 package es.marcos.digreport.application.port.out;
 
+import es.marcos.digreport.domain.enums.FindValidationStatus;
 import es.marcos.digreport.domain.model.Find;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +16,9 @@ public interface FindRepositoryPort {
 
     void deleteById(Long id);
 
-    Optional<Find> findByReporterId(Long id);
+    List<Find> findByReporterId(Long reporterId);
 
-    Boolean existsByReporterId(Long id);
+    List<Find> findByStatus(FindValidationStatus status);
+
+    Boolean existsByReporterId(Long reporterId);
 }
-

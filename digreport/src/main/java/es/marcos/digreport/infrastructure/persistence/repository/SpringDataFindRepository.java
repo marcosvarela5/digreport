@@ -1,13 +1,18 @@
 package es.marcos.digreport.infrastructure.persistence.repository;
 
-
+import es.marcos.digreport.domain.enums.FindValidationStatus;
 import es.marcos.digreport.infrastructure.persistence.entities.FindEntityJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface SpringDataFindRepository extends JpaRepository<FindEntityJpa,Long> {
+public interface SpringDataFindRepository extends JpaRepository<FindEntityJpa, Long> {
 
-    Optional<FindEntityJpa> findByReporterId(Long id);
-    Boolean existsByReporterId(Long id);
+    List<FindEntityJpa> findByReporterIdOrderByDiscoveredAtDesc(Long reporterId);
+
+    List<FindEntityJpa> findByStatusOrderByDiscoveredAtDesc(FindValidationStatus status);
+
+    List<FindEntityJpa> findAllByOrderByDiscoveredAtDesc();
+
+    Boolean existsByReporterId(Long reporterId);
 }
