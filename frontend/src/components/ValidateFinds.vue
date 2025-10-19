@@ -3,7 +3,7 @@
     <div class="validate-finds-header">
       <div class="header-content">
         <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
-        <h1 class="page-title">Panel de Validación</h1>
+        <h1 class="page-title">Validación</h1>
         <p class="page-subtitle">Revisa y valida los hallazgos reportados por los ciudadanos</p>
       </div>
 
@@ -13,7 +13,7 @@
             :class="{ active: activeTab === 'pending' }"
             @click="switchToPending"
         >
-          Pendientes
+          Validaciones pendientes
           <span v-if="activeTab === 'pending' && finds.length > 0" class="tab-badge">{{ finds.length }}</span>
         </button>
         <button
@@ -21,27 +21,22 @@
             :class="{ active: activeTab === 'validated' }"
             @click="switchToValidated"
         >
-          Mis Validaciones
+          Mis validaciones
           <span v-if="activeTab === 'validated' && finds.length > 0" class="tab-badge">{{ finds.length }}</span>
         </button>
       </div>
     </div>
 
-    <div class="finds-content">
-      <div v-if="isLoading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Cargando hallazgos pendientes...</p>
-      </div>
+    <LoadingState v-if="isLoading" message="Cargando hallazgos pendientes..." />
 
-      <div v-else-if="error" class="error-state">
-        <p>{{ error }}</p>
-      </div>
+    <ErrorState v-else-if="error" :message="error" />
 
-      <div v-else-if="finds.length === 0" class="empty-state">
-        <div class="empty-icon">{{ activeTab === 'pending' ? '✅' : '📋' }}</div>
-        <h3>{{ activeTab === 'pending' ? 'No hay hallazgos pendientes' : 'No has validado ningún hallazgo' }}</h3>
-        <p>{{ activeTab === 'pending' ? 'Todos los hallazgos han sido revisados.' : 'Los hallazgos que valides aparecerán aquí.' }}</p>
-      </div>
+    <EmptyState
+        v-else-if="finds.length === 0"
+        :icon="activeTab === 'pending' ? '✅' : '📋'"
+        :title="activeTab === 'pending' ? 'No hay hallazgos pendientes' : 'No has validado ningún hallazgo'"
+        :message="activeTab === 'pending' ? 'Todos los hallazgos han sido revisados.' : 'Los hallazgos que valides aparecerán aquí.'"
+    />
 
       <div v-else class="finds-grid">
         <div
@@ -50,10 +45,8 @@
             class="find-card"
         >
           <div class="find-card-header">
-            <span class="find-id">Hallazgo #{{ find.id }}</span>
-            <span class="find-priority" :class="getPriorityClass(find.priority)">
-              {{ getPriorityText(find.priority) }}
-            </span>
+            <span class="find-id">#{{ find.id }}</span>
+            <PriorityBadge :priority="find.priority" />
           </div>
 
           <div class="find-card-body">
@@ -91,80 +84,11 @@
         </div>
       </div>
     </div>
-
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>Validar Hallazgo #{{ selectedFind?.id }}</h2>
-          <button @click="closeModal" class="modal-close">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <div class="find-summary">
-            <p><strong>Reportado por:</strong> {{ selectedFind?.reporterName }}</p>
-            <p><strong>Fecha:</strong> {{ formatDate(selectedFind?.discoveredAt) }}</p>
-            <p><strong>Ubicación:</strong> {{ selectedFind?.latitude }}, {{ selectedFind?.longitude }}</p>
-          </div>
-
-          <form @submit.prevent="handleValidate">
-            <div class="form-group">
-              <label class="form-label">Decisión *</label>
-              <div class="radio-group">
-                <label class="radio-label">
-                  <input type="radio" v-model="validationForm.status" value="VALIDATED" />
-                  <span>✅ Validar</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" v-model="validationForm.status" value="REJECTED" />
-                  <span>❌ Rechazar</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="priority" class="form-label">Prioridad</label>
-              <select id="priority" v-model="validationForm.priority" class="form-input">
-                <option value="LOW">Baja</option>
-                <option value="MEDIUM">Media</option>
-                <option value="HIGH">Alta</option>
-                <option value="CRITICAL">Crítica</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="comment" class="form-label">Comentario</label>
-              <textarea
-                  id="comment"
-                  v-model="validationForm.comment"
-                  class="form-textarea"
-                  placeholder="Añade un comentario para el ciudadano (opcional)"
-                  rows="4"
-                  maxlength="500"
-              ></textarea>
-              <div class="char-counter">{{ validationForm.comment.length }} / 500</div>
-            </div>
-
-            <div v-if="validationError" class="alert alert-error">
-              {{ validationError }}
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" @click="closeModal" class="btn btn-outline" :disabled="isValidating">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary" :disabled="isValidating || !validationForm.status">
-                <span v-if="isValidating" class="loading"></span>
-                {{ isValidating ? 'Procesando...' : 'Confirmar' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
+import { LoadingState, ErrorState, EmptyState, PriorityBadge } from './common'
+import { useFormatters } from '@/composables/useFormatters'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
@@ -177,17 +101,8 @@ const authStore = useAuthStore()
 const finds = ref<any[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
-const showModal = ref(false)
-const selectedFind = ref<any>(null)
-const isValidating = ref(false)
-const validationError = ref<string | null>(null)
 const activeTab = ref('pending')
-
-const validationForm = reactive({
-  status: '',
-  priority: 'MEDIUM',
-  comment: ''
-})
+const { formatDate, truncateText } = useFormatters()
 
 const loadPendingFinds = async () => {
   try {
@@ -229,82 +144,8 @@ const switchToPending = () => {
   loadPendingFinds()
 }
 
-const openValidationModal = (find: any) => {
-  selectedFind.value = find
-  validationForm.status = ''
-  validationForm.priority = find.priority
-  validationForm.comment = ''
-  validationError.value = null
-  showModal.value = true
-}
-
-const closeModal = () => {
-  showModal.value = false
-  selectedFind.value = null
-}
-
-const handleValidate = async () => {
-  if (!validationForm.status) {
-    validationError.value = 'Debes seleccionar una decisión'
-    return
-  }
-
-  try {
-    isValidating.value = true
-    validationError.value = null
-
-    const payload: any = {
-      status: validationForm.status,
-      priority: validationForm.priority
-    }
-
-    if (validationForm.comment.trim()) {
-      payload.reviewComment = validationForm.comment.trim()
-    }
-
-    await apiClient.put(`/api/finds/${selectedFind.value.id}/validate`, payload)
-
-    finds.value = finds.value.filter(f => f.id !== selectedFind.value.id)
-
-    closeModal()
-
-  } catch (err: any) {
-    validationError.value = err.response?.data?.message || 'Error al validar el hallazgo'
-  } finally {
-    isValidating.value = false
-  }
-}
-
 const viewDetails = (id: number) => {
   router.push(`/finds/${id}`)
-}
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  })
-}
-
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
-}
-
-const getPriorityClass = (priority: string) => {
-  return `priority-${priority.toLowerCase()}`
-}
-
-const getPriorityText = (priority: string) => {
-  const priorityMap: Record<string, string> = {
-    'LOW': 'Prioridad Baja',
-    'MEDIUM': 'Prioridad Media',
-    'HIGH': 'Prioridad Alta',
-    'CRITICAL': 'Prioridad Crítica'
-  }
-  return priorityMap[priority] || priority
 }
 
 onMounted(() => {

@@ -26,22 +26,22 @@ const priorityText = computed(() => PRIORITY_MAP[props.priority].text)
 }
 
 .priority-low {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #2b6e01;
+  color: #ffffff;
 }
 
 .priority-medium {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #dab600;
+  color: #ffffff;
 }
 
 .priority-high {
-  background: #fed7aa;
-  color: #ea580c;
+  background: #fa925d;
+  color: #ffffff;
 }
 
 .priority-critical {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #d90101;
+  color: #ffffff;
 }
 </style>

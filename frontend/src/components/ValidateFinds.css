@@ -90,28 +90,6 @@
     margin: 0 auto;
 }
 
-.loading-state, .error-state, .empty-state {
-    background: white;
-    padding: 4rem 2rem;
-    border-radius: var(--radius-lg);
-    text-align: center;
-}
-
-.spinner {
-    width: 3rem;
-    height: 3rem;
-    border: 4px solid #e5e7eb;
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-}
-
-.empty-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-}
-
 .finds-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -151,22 +129,6 @@
     font-size: var(--text-xs);
     font-weight: 600;
     color: white;
-}
-
-.find-priority.priority-low {
-    background: #94a3b8;
-}
-
-.find-priority.priority-medium {
-    background: #eab308;
-}
-
-.find-priority.priority-high {
-    background: #f97316;
-}
-
-.find-priority.priority-critical {
-    background: #dc2626;
 }
 
 .find-card-body {
