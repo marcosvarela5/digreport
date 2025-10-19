@@ -49,7 +49,7 @@ El sistema permite:
 
 ---
 
-## 🚀 Ejecución
+## Ejecución
 
 ### 1️⃣ Clonar el repositorio
 ```bash
