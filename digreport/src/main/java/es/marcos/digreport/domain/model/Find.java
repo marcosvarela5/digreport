@@ -22,6 +22,9 @@ public class Find {
 
     private String description;
 
+    private String ccaa;
+
+    private Long validatedBy;
 
     private FindValidationStatus status = FindValidationStatus.PENDING;
     private FindPriority findPriority = FindPriority.MEDIUM;
@@ -38,7 +41,9 @@ public class Find {
                 Double latitude,
                 Double longitude,
                 Long reporterId,
-                String description
+                String description,
+                String ccaa,
+                Long validatedBy
                 /*List<FindImage> images*/) {
         this.id = id;
         this.discoveredAt = discoveredAt;
@@ -46,6 +51,8 @@ public class Find {
         this.longitude = longitude;
         this.reporterId = reporterId;
         this.description = description;
+        this.ccaa = ccaa;
+        this.validatedBy = validatedBy;
         //this.images = images;
     }
 }

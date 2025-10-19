@@ -46,6 +46,12 @@ public class FindEntityJpa {
     @Column(name = "priority", nullable = false, length = 20)
     private FindPriority findPriority = FindPriority.MEDIUM;
 
+    @Column(name = "ccaa", length = 50)
+    private String ccaa;
+
+    @Column(name = "validated_by")
+    private Long validatedBy;
+
 
     /* ====================  ==================== */
 

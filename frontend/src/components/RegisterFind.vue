@@ -148,13 +148,15 @@ interface FindForm {
   latitude: number | null
   longitude: number | null
   description: string
+  ccaa: string
 }
 
 const form = reactive<FindForm>({
   discoveredAt: '',
   latitude: null,
   longitude: null,
-  description: ''
+  description: '',
+  ccaa: ''
 })
 
 const errors = reactive({
@@ -179,11 +181,14 @@ const getCurrentLocation = () => {
   error.value = null
 
   navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         form.latitude = parseFloat(position.coords.latitude.toFixed(6))
         form.longitude = parseFloat(position.coords.longitude.toFixed(6))
         clearFieldError('latitude')
         clearFieldError('longitude')
+
+        await fetchCcaaFromCoordinates(form.latitude, form.longitude)
+
         isGettingLocation.value = false
       },
       (err) => {
@@ -191,6 +196,29 @@ const getCurrentLocation = () => {
         isGettingLocation.value = false
       }
   )
+}
+
+const fetchCcaaFromCoordinates = async (lat: number, lon: number) => {
+  try {
+    const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=5&addressdetails=1`,
+        {
+          headers: {
+            'Accept-Language': 'es'
+          }
+        }
+    )
+
+    const data = await response.json()
+
+    if (data.address && data.address.state) {
+      form.ccaa = data.address.state
+    } else if (data.address && data.address.province) {
+      form.ccaa = data.address.province
+    }
+  } catch (err) {
+    console.error('Error al obtener CCAA:', err)
+  }
 }
 
 const validateField = (field: keyof typeof errors) => {
@@ -283,11 +311,16 @@ const handleSubmit = async () => {
     error.value = null
     successMessage.value = null
 
+    if (!form.ccaa && form.latitude && form.longitude) {
+      await fetchCcaaFromCoordinates(form.latitude, form.longitude)
+    }
+
     const payload = {
       discoveredAt: form.discoveredAt,
       latitude: form.latitude,
       longitude: form.longitude,
-      description: form.description.trim()
+      description: form.description.trim(),
+      ccaa: form.ccaa || 'Desconocida'
     }
 
     await apiClient.post('/api/finds', payload)

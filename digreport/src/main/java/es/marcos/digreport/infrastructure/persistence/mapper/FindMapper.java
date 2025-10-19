@@ -18,6 +18,8 @@ public class FindMapper {
                 .description(find.getDescription())
                 .status(find.getStatus())
                 .findPriority(find.getFindPriority())
+                .ccaa(find.getCcaa())
+                .validatedBy(find.getValidatedBy())
                 .build();
     }
 
@@ -30,7 +32,9 @@ public class FindMapper {
                 entity.getLatitude(),
                 entity.getLongitude(),
                 entity.getReporterId(),
-                entity.getDescription()
+                entity.getDescription(),
+                entity.getCcaa(),
+                entity.getValidatedBy()
         );
 
         find.setStatus(entity.getStatus());

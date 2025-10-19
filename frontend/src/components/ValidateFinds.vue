@@ -85,7 +85,7 @@
 
           <div class="find-card-footer">
             <button @click="viewDetails(find.id)" class="btn btn-primary">
-              Ver y Validar →
+              Ver →
             </button>
           </div>
         </div>

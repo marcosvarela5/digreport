@@ -20,5 +20,7 @@ public record CreateFindRequest(
 
         @NotBlank(message = "La descripción es obligatoria")
         @Size(min = 10, max = 1000, message = "La descripción debe tener entre 10 y 1000 caracteres")
-        String description
+        String description,
+
+        String ccaa
 ) {}

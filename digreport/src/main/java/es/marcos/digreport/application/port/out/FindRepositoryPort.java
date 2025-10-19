@@ -22,4 +22,6 @@ public interface FindRepositoryPort {
     List<Find> findByStatus(FindValidationStatus status);
 
     Boolean existsByReporterId(Long reporterId);
+
+    List<Find> findByValidatedBy(Long validatedBy);
 }

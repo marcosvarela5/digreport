@@ -67,6 +67,15 @@ public class FindRepositoryAdapter implements FindRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Find> findByValidatedBy(Long validatedBy) {
+        return repository.findByValidatedByOrderByDiscoveredAtDesc(validatedBy)
+                .stream()
+                .map(FindMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public Boolean existsByReporterId(Long reporterId) {
         return repository.existsByReporterId(reporterId);
     }

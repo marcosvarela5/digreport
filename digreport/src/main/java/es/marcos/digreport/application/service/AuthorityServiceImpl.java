@@ -84,21 +84,9 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     private List<FindsByRegionDto> calculateFindsByCcaa(List<Find> finds) {
-        Map<Long, String> reporterCcaa = new HashMap<>();
-
-        finds.forEach(find -> {
-            if (!reporterCcaa.containsKey(find.getReporterId())) {
-                memberRepository.findById(find.getReporterId())
-                        .ifPresent(m -> reporterCcaa.put(m.getId(), m.getCcaa()));
-            }
-        });
-
         Map<String, Long> byCcaa = finds.stream()
-                .filter(f -> reporterCcaa.containsKey(f.getReporterId()))
-                .collect(Collectors.groupingBy(
-                        f -> reporterCcaa.get(f.getReporterId()),
-                        Collectors.counting()
-                ));
+                .filter(f -> f.getCcaa() != null && !f.getCcaa().isBlank())
+                .collect(Collectors.groupingBy(Find::getCcaa, Collectors.counting()));
 
         return byCcaa.entrySet().stream()
                 .map(e -> new FindsByRegionDto(e.getKey(), e.getValue()))

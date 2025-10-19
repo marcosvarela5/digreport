@@ -49,6 +49,7 @@ public class FindServiceImpl implements FindService {
         find.setDescription(request.description());
         find.setReporterId(reporter.getId());
         find.setStatus(FindValidationStatus.PENDING);
+        find.setCcaa(request.ccaa());
 
         Find saved = findRepository.save(find);
         return toDto(saved, reporter);
@@ -108,9 +109,12 @@ public class FindServiceImpl implements FindService {
         }
 
         find.setStatus(request.status());
+        find.setValidatedBy(archaeologist.getId());
         if (request.priority() != null) {
             find.setFindPriority(request.priority());
         }
+
+
 
         Find saved = findRepository.save(find);
 
@@ -202,17 +206,8 @@ public class FindServiceImpl implements FindService {
         Member archaeologist = memberRepository.findByEmail(archaeologistEmail.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        List<FindReviewNote> myNotes = reviewNoteRepository.findByReviewerId(archaeologist.getId());
-
-        Set<Long> findIds = myNotes.stream()
-                .map(FindReviewNote::getFindId)
-                .collect(Collectors.toSet());
-
-        return findIds.stream()
-                .map(findRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .filter(find -> find.getStatus() != FindValidationStatus.PENDING)
+        return findRepository.findByValidatedBy(archaeologist.getId())
+                .stream()
                 .map(this::toDtoWithReporter)
                 .toList();
     }
