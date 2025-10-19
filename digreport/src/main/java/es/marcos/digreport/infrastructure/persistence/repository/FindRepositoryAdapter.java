@@ -70,4 +70,5 @@ public class FindRepositoryAdapter implements FindRepositoryPort {
     public Boolean existsByReporterId(Long reporterId) {
         return repository.existsByReporterId(reporterId);
     }
+
 }
