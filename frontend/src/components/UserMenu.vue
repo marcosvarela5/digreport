@@ -26,6 +26,28 @@
           <span>Actualizar Perfil</span>
         </router-link>
 
+        <router-link to="/my-finds" class="menu-item" v-if="authStore.isUser">
+          <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          <span>Mis Hallazgos</span>
+        </router-link>
+
+        <router-link to="/validate-finds" class="menu-item" v-if="authStore.isArchaeologist">
+          <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <span>Validar Hallazgos</span>
+          <span v-if="pendingCount > 0" class="badge-count">{{ pendingCount }}</span>
+        </router-link>
+
+        <router-link to="/authority" class="menu-item menu-item-authority" v-if="authStore.isAuthority">
+          <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          </svg>
+          <span>Panel de Autoridad</span>
+        </router-link>
+
         <div class="menu-divider"></div>
 
         <button @click="handleLogout" class="menu-item logout">
@@ -40,14 +62,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { apiClient } from '../services/api'
 import './UserMenu.css'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const showMenu = ref(false)
+const pendingCount = ref(0)
 
 const userName = computed(() => {
   if (!authStore.user) return 'Usuario'
@@ -85,4 +109,19 @@ const handleLogout = () => {
   showMenu.value = false
   router.push('/')
 }
+
+const loadPendingCount = async () => {
+  if (authStore.isArchaeologist || authStore.isAuthority) {
+    try {
+      const response = await apiClient.get('/api/finds/pending/count')
+      pendingCount.value = response.data
+    } catch (err) {
+      console.error('Error al cargar contador de pendientes:', err)
+    }
+  }
+}
+
+onMounted(() => {
+  loadPendingCount()
+})
 </script>

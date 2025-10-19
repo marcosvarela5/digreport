@@ -24,6 +24,31 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('../views/RegisterView.vue'),
+    },
+    {
+      path: '/register-find',
+      name: 'registerFind',
+      component: () => import('../views/RegisterFindView.vue'),
+    },
+    {
+      path: '/my-finds',
+      name: 'myFinds',
+      component: () => import('../views/MyFindsView.vue'),
+    },
+    {
+      path: '/finds/:id',
+      name: 'findDetail',
+      component: () => import('../views/FindDetailView.vue'),
+    },
+    {
+      path: '/validate-finds',
+      name: 'validateFinds',
+      component: () => import('../views/ValidateFindsView.vue'),
+    },
+    {
+      path: '/authority',
+      name: 'authority',
+      component: () => import('../views/AuthorityDashboardView.vue'),
     }
   ],
 })

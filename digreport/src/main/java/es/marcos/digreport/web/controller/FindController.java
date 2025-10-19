@@ -1,8 +1,6 @@
 package es.marcos.digreport.web.controller;
 
-import es.marcos.digreport.application.dto.find.CreateFindRequest;
-import es.marcos.digreport.application.dto.find.FindDto;
-import es.marcos.digreport.application.dto.find.ValidateFindRequest;
+import es.marcos.digreport.application.dto.find.*;
 import es.marcos.digreport.application.port.in.FindService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -76,6 +74,39 @@ public class FindController {
     @PreAuthorize("hasRole('AUTHORITY')")
     public ResponseEntity<List<FindDto>> getAllFinds() {
         List<FindDto> finds = findService.getAllFinds();
+        return ResponseEntity.ok(finds);
+    }
+
+    @GetMapping("/{id}/notes")
+    public ResponseEntity<List<ReviewNoteDto>> getReviewNotes(@PathVariable Long id) {
+        List<ReviewNoteDto> notes = findService.getReviewNotes(id);
+        return ResponseEntity.ok(notes);
+    }
+
+    @PostMapping("/{id}/notes")
+    @PreAuthorize("hasRole('ARCHAEOLOGIST') or hasRole('AUTHORITY')")
+    public ResponseEntity<ReviewNoteDto> addReviewNote(
+            @PathVariable Long id,
+            Authentication authentication,
+            @Valid @RequestBody AddReviewNoteRequest request
+    ) {
+        String email = authentication.getName();
+        ReviewNoteDto note = findService.addReviewNote(id, email, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(note);
+    }
+
+    @GetMapping("/pending/count")
+    @PreAuthorize("hasRole('ARCHAEOLOGIST') or hasRole('AUTHORITY')")
+    public ResponseEntity<Integer> getPendingCount() {
+        int count = findService.getPendingCount();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/my-validated")
+    @PreAuthorize("hasRole('ARCHAEOLOGIST')")
+    public ResponseEntity<List<FindDto>> getMyValidatedFinds(Authentication authentication) {
+        String email = authentication.getName();
+        List<FindDto> finds = findService.getMyValidatedFinds(email);
         return ResponseEntity.ok(finds);
     }
 }

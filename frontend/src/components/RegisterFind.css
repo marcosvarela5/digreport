@@ -1,0 +1,333 @@
+.register-find-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-find-card {
+    background: var(--bg-primary);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.back-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+    z-index: 1000;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.back-link:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.register-find-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.register-find-title {
+    font-size: var(--text-3xl);
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.register-find-subtitle {
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+}
+
+.register-find-form {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: var(--radius-lg);
+    border-left: 4px solid var(--primary-color);
+}
+
+.section-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.form-input {
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    transition: all var(--transition-base);
+    background: var(--bg-primary);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.form-input.error {
+    border-color: var(--error-color);
+}
+
+.form-textarea {
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-family: inherit;
+    resize: vertical;
+    transition: all var(--transition-base);
+    background: var(--bg-primary);
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.form-textarea.error {
+    border-color: var(--error-color);
+}
+
+.char-counter {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-align: right;
+    margin-top: 0.25rem;
+}
+
+.form-error {
+    color: var(--error-color);
+    font-size: var(--text-sm);
+    margin-top: 0.25rem;
+}
+
+.location-helper {
+    margin-bottom: 1rem;
+}
+
+.btn-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #f0f9ff;
+    border: 2px solid #3b82f6;
+    border-radius: var(--radius-md);
+    color: #1e40af;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-location:hover:not(:disabled) {
+    background: #dbeafe;
+    transform: translateY(-1px);
+}
+
+.btn-location:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.icon-location {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.info-box {
+    padding: 1rem;
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+}
+
+.info-box p {
+    margin: 0;
+    color: #92400e;
+    font-size: var(--text-sm);
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    border-left: 4px solid;
+    font-size: var(--text-sm);
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border-color: var(--error-color);
+    color: #991b1b;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: var(--text-lg);
+}
+
+.loading {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .register-find-container {
+        padding: 1rem;
+    }
+
+    .register-find-card {
+        padding: 1.5rem;
+    }
+
+    .form-section {
+        padding: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .register-find-title {
+        font-size: var(--text-2xl);
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-find-card {
+        padding: 1rem;
+    }
+
+    .form-section {
+        margin-bottom: 1.5rem;
+        padding: 0.75rem;
+    }
+
+    .register-find-title {
+        font-size: var(--text-xl);
+    }
+
+    .back-link {
+        top: 15px;
+        left: 15px;
+        font-size: 0.9rem;
+    }
+}

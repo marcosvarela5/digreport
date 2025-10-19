@@ -1,8 +1,6 @@
 package es.marcos.digreport.application.port.in;
 
-import es.marcos.digreport.application.dto.find.CreateFindRequest;
-import es.marcos.digreport.application.dto.find.FindDto;
-import es.marcos.digreport.application.dto.find.ValidateFindRequest;
+import es.marcos.digreport.application.dto.find.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +18,13 @@ public interface FindService {
     FindDto validateFind(Long findId, String archaeologistEmail, ValidateFindRequest request);
 
     List<FindDto> getAllFinds();
+
+    List<ReviewNoteDto> getReviewNotes(Long findId);
+
+    ReviewNoteDto addReviewNote(Long findId, String archaeologistEmail, AddReviewNoteRequest request);
+
+    int getPendingCount();
+
+    List<FindDto> getMyValidatedFinds(String archaeologistEmail);
+
 }

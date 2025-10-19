@@ -69,9 +69,9 @@
             responsable de hallazgos arqueológicos y la protección del patrimonio cultural.
           </p>
           <div class="hero-actions">
-            <a href="/registerFind" class="btn btn-primary btn-large">
+            <router-link to="/register-find" class="btn btn-primary btn-large">
               Registrar Hallazgo
-            </a>
+            </router-link>
             <a href="#sobre-proyecto" class="btn btn-outline btn-large">
               Conocer Más
             </a>
