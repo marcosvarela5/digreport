@@ -79,9 +79,44 @@ Este proyecto forma parte del Trabajo de Fin de Grado de Marcos Varela y su uso 
   
 ## 🖥️ Capturas de pantalla
 
-### Home
+### Autenticación
+#### Login
+<img src="./docs/digreport_loginform.png" width="750">
+
+### Registro y Perfil
+#### Registro
+<img src="./docs/digreport_registerform.png" width="750">
+
+#### Editar perfil
+<img src="./docs/digreport_editprofile.png" width="750">
+
+### Panel de administración (solo rol autoridad)
+#### Panel de administración 1
+<img src="./docs/digreport_adminpanel_!.png" width="750">
+
+#### Panel de administración 2
+<img src="./docs/digreport_adminpanel_2.png" width="750">
+
+#### Panel de administración 3
+<img src="./docs/digreport_adminpanel_3.png" width="750">
+
+### Informes (usuarios)
+#### Home
 <img src="./docs/digreport_home.png" width="750">
 
+#### Formulario de informe de hallazgo
+<img src="./docs/digreport_findreportform.png" width="750">
 
-### Registro
-<img src="./docs/digreport_registerform.png" width="750">
+#### Mis informes
+<img src="./docs/digreport_myreports.png" width="750">
+
+#### Detalles y validación (solo rol profesional tiene botón validar)
+<img src="./docs/digreport_detailsandvalidate.png" width="750">
+
+### Validaciones (solo rol profesional)
+#### Mis validaciones
+<img src="./docs/digreport_myvalidations.png" width="750">
+
+#### Validaciones pendientes
+<img src="./docs/digreport_pendingvalidations.png" width="750">
+
