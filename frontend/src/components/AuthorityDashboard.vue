@@ -302,8 +302,8 @@
               <tr>
                 <th>ID</th>
                 <th>Nombre</th>
+                <th>Nivel</th>
                 <th>Email</th>
-                <th>Rol</th>
                 <th>Total</th>
                 <th>Validados</th>
                 <th>Rechazados</th>
@@ -315,12 +315,12 @@
               <tr v-for="user in users" :key="user.userId">
                 <td><strong>#{{ user.userId }}</strong></td>
                 <td class="user-cell">{{ user.userName }}</td>
-                <td class="email-cell">{{ user.email }}</td>
                 <td>
                   <span :class="['role-badge', getRoleClass(user.role)]">
                     {{ getRoleText(user.role) }}
                   </span>
                 </td>
+                <td class="email-cell">{{ user.email }}</td>
                 <td>{{ user.totalFinds }}</td>
                 <td class="validated-cell">{{ user.validatedFinds }}</td>
                 <td style="color: #dc2626; font-weight: 600;">{{ user.rejectedFinds }}</td>
@@ -405,7 +405,8 @@ const loadUsers = async () => {
     isLoadingUsers.value = true
     usersError.value = null
     const response = await apiClient.get('/api/members/stats')
-    users.value = response.data
+
+    users.value = response.data.filter((u: any) => u.role === 'USER' || u.role === 'ARCHAEOLOGIST')
   } catch (err: any) {
     usersError.value = err.response?.data?.message || 'Error al cargar usuarios'
   } finally {
@@ -500,8 +501,8 @@ const getRoleClass = (role: string) => {
 const getRoleText = (role: string) => {
   const texts: Record<string, string> = {
     'USER': 'Ciudadano',
-    'ARCHAEOLOGIST': 'Arqueólogo',
-    'AUTHORITY': 'Autoridad'
+    'ARCHAEOLOGIST': 'Profesional',
+    'AUTHORITY': 'Administrador'
   }
   return texts[role] || role
 }
