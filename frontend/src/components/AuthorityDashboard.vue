@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside class="dashboard-sidebar">
       <div class="sidebar-header">
-        <h2 class="sidebar-title">Panel de Autoridad</h2>
+        <h2 class="sidebar-title">Panel de administración</h2>
         <p class="sidebar-subtitle">Gestión del sistema</p>
       </div>
 
@@ -15,7 +15,7 @@
           <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
-          <span>Resumen General</span>
+          <span>General</span>
         </button>
 
         <button
@@ -82,7 +82,7 @@
                 </svg>
               </div>
               <div class="stat-content">
-                <p class="stat-label">Total Hallazgos</p>
+                <p class="stat-label">Reportes totales</p>
                 <p class="stat-value">{{ stats.totalFinds }}</p>
               </div>
             </div>
@@ -94,7 +94,7 @@
                 </svg>
               </div>
               <div class="stat-content">
-                <p class="stat-label">Pendientes</p>
+                <p class="stat-label">Reportes a revisar</p>
                 <p class="stat-value" style="color: #f59e0b;">{{ stats.pendingFinds }}</p>
               </div>
             </div>
@@ -128,7 +128,7 @@
           <div class="charts-grid">
             <!-- Top Reporters -->
             <div class="chart-card">
-              <h3 class="chart-title">Top 10 Ciudadanos</h3>
+              <h3 class="chart-title">Usuarios más activos</h3>
               <div v-if="stats.topReporters && stats.topReporters.length > 0" class="table-container">
                 <table class="data-table">
                   <thead>
@@ -136,7 +136,7 @@
                     <th>Usuario</th>
                     <th>Total</th>
                     <th>Validados</th>
-                    <th>Ratio</th>
+                    <th>Proporción</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -160,7 +160,7 @@
 
             <!-- Finds by Region -->
             <div class="chart-card">
-              <h3 class="chart-title">Hallazgos por Comunidad Autónoma</h3>
+              <h3 class="chart-title">Reportes por Comunidad Autónoma</h3>
               <div v-if="stats.findsByCcaa && stats.findsByCcaa.length > 0" class="region-list">
                 <div v-for="region in stats.findsByCcaa" :key="region.ccaa" class="region-item">
                   <div class="region-info">
@@ -180,17 +180,33 @@
 
           <!-- Monthly Evolution -->
           <div class="chart-card full-width">
-            <h3 class="chart-title">Evolución Mensual</h3>
-            <div v-if="stats.monthlyStats && stats.monthlyStats.length > 0" class="monthly-chart">
-              <div v-for="month in stats.monthlyStats.slice(-12)" :key="month.month" class="month-bar">
-                <div class="month-bar-fill" :style="{ height: getMonthPercentage(month) + '%' }">
+            <h3 class="chart-title">Evolución mensual</h3>
+            <button class="advanced-search-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              Búsqueda avanzada
+            </button>
+
+            <div v-if="sortedMonthlyStats.length > 0" class="monthly-chart">
+              <div
+                  v-for="month in sortedMonthlyStats"
+                  :key="`${month.month}-${month.year}`"
+                  class="month-bar"
+              >
+                <div
+                    class="month-bar-fill"
+                    :style="{ height: getMonthHeight(month) }"
+                >
                   <span class="month-value">{{ month.count }}</span>
                 </div>
                 <span class="month-label">{{ month.month }}</span>
               </div>
             </div>
+
             <div v-else class="empty-chart">
-              <p>No hay datos disponibles</p>
+              📊 No hay datos mensuales disponibles
             </div>
           </div>
         </template>
@@ -373,6 +389,50 @@ const filteredFinds = computed(() => {
   if (filterStatus.value === 'ALL') return allFinds.value
   return allFinds.value.filter(find => find.status === filterStatus.value)
 })
+
+
+const sortedMonthlyStats = computed(() => {
+
+  const last12Months = []
+  const now = new Date()
+
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+    const monthStr = `${monthNames[date.getMonth()]} ${date.getFullYear()}`
+
+
+    const existingData = stats.value.monthlyStats?.find((m: any) => {
+      const parts = m.month.toLowerCase().split(' ')
+      const dataMonth = parts[0]
+      const dataYear = parseInt(parts[1])
+
+      return dataMonth === monthNames[date.getMonth()] && dataYear === date.getFullYear()
+    })
+
+    last12Months.push({
+      month: monthStr,
+      count: existingData?.count || 0
+    })
+  }
+
+  console.log('📊 Últimos 12 meses:', last12Months)
+  return last12Months
+})
+
+const maxMonthlyValue = computed(() => {
+  if (!sortedMonthlyStats.value.length) return 1
+  const max = Math.max(...sortedMonthlyStats.value.map((m: any) => m.count), 1)
+  console.log('📈 Valor máximo:', max)
+  return max
+})
+
+const getMonthHeight = (month: any) => {
+  if (month.count === 0) return '5%'
+  const percentage = (month.count / maxMonthlyValue.value) * 100
+  console.log(`📏 ${month.month}: ${percentage}%`)
+  return `${percentage}%`
+}
 
 const loadStats = async () => {
   try {
