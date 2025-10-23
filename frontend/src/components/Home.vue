@@ -4,19 +4,17 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="nav-content">
-          <!-- Logo -->
           <div class="logo">
+            <img :src="logoDigreport" alt="DIGREPORT" class="logo-img">
             <h1>DIGREPORT</h1>
           </div>
 
-          <!-- Desktop Navigation -->
           <div class="nav-desktop">
             <div class="nav-links">
               <a href="#inicio" class="nav-link">Inicio</a>
               <a href="#sobre-proyecto" class="nav-link">Proyecto</a>
               <a href="#como-funciona" class="nav-link">Cómo funciona</a>
 
-              <!-- Mostrar botones o menú de usuario según autenticación -->
               <template v-if="authStore.isAuthenticated">
                 <UserMenu />
               </template>
@@ -27,7 +25,6 @@
             </div>
           </div>
 
-          <!-- Mobile menu button -->
           <div class="mobile-menu-btn">
             <button @click="toggleMenu" class="menu-toggle">
               <span class="hamburger"></span>
@@ -37,7 +34,6 @@
           </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
         <div v-show="isMenuOpen" class="mobile-menu">
           <a href="#inicio" class="mobile-link" @click="toggleMenu">Inicio</a>
           <a href="#sobre-proyecto" class="mobile-link" @click="toggleMenu">El Proyecto</a>
@@ -55,80 +51,94 @@
       </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section - Split Screen Design -->
     <section id="inicio" class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <h1 class="hero-title">
-            Protegiendo el
-            <span class="highlight">Patrimonio Histórico</span>
-            <br>de forma colaborativa
-          </h1>
-          <p class="hero-subtitle">
-            DIGREPORT conecta ciudadanos, arqueólogos y autoridades para la gestión
-            responsable de hallazgos arqueológicos y la protección del patrimonio cultural.
-          </p>
-          <div class="hero-actions">
-            <router-link to="/register-find" class="btn btn-primary btn-large">
-              Registrar Hallazgo
-            </router-link>
-            <a href="#sobre-proyecto" class="btn btn-outline btn-large">
-              Conocer Más
-            </a>
+      <div class="hero-visual">
+        <div class="heritage-card">
+          <div class="card-icon">
+            <img :src="logoDigreport" alt="DIGREPORT" class="card-icon-img">
           </div>
+          <h3>DIGREPORT</h3>
+          <h4>Tecnología al servicio de nuestra historia</h4>
         </div>
+      </div>
 
-        <div class="hero-visual">
-          <div class="heritage-card">
-            <div class="card-icon">🏛️</div>
-            <h3>DIGREPORT</h3>
-            <h4>Trabajamos juntos para preservar nuestro legado</h4>
-          </div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Protegiendo el
+          <span class="highlight">Patrimonio Histórico</span>
+          de forma colaborativa
+        </h1>
+        <p class="hero-subtitle">
+          DIGREPORT conecta ciudadanos, arqueólogos y autoridades para la gestión
+          responsable de hallazgos arqueológicos y la protección del patrimonio cultural.
+        </p>
+        <div class="hero-actions">
+          <router-link to="/register-find" class="btn btn-primary btn-large">
+            Registrar Hallazgo
+          </router-link>
+          <a href="#sobre-proyecto" class="btn btn-outline btn-large">
+            Conocer Más
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Project  -->
+    <!-- Project Section - 3 Column Cards -->
     <section id="sobre-proyecto" class="project-section">
       <div class="container">
         <div class="section-header">
-          <h2>Qué es DIGREPORT?</h2>
+          <h2>¿Qué es DIGREPORT?</h2>
           <p>
-            Una plataforma para uso institucional que permite a ciudadanos, profesionales y autoridades
+            Una plataforma institucional que permite a ciudadanos, profesionales y autoridades
             colaborar en la protección del patrimonio histórico español.
           </p>
         </div>
 
         <div class="project-grid">
           <div class="project-item">
-            <div class="project-icon">👥</div>
-            <h3>Ciudadanos</h3>
-            <p>
-              Registran hallazgos arqueológicos de forma legal y responsable.
-              Contribuyen directamente a la preservación del patrimonio.
-            </p>
+            <div class="project-icon-wrapper">
+              <div class="project-icon">👥</div>
+            </div>
+            <div class="project-content">
+              <h3>Ciudadanos</h3>
+              <p>
+                Registran hallazgos arqueológicos de forma legal y responsable,
+                contribuyendo directamente a la preservación del patrimonio.
+              </p>
+            </div>
           </div>
+
           <div class="project-item">
-            <div class="project-icon">🔬</div>
-            <h3>Arqueólogos</h3>
-            <p>
-              Supervisar los hallazgos reportados por ciudadanos.
-              Colaborar en la identificación de bienes arqueológicos.
-            </p>
+            <div class="project-icon-wrapper">
+              <div class="project-icon">🔬</div>
+            </div>
+            <div class="project-content">
+              <h3>Arqueólogos</h3>
+              <p>
+                Supervisan los hallazgos reportados por ciudadanos y
+                colaboran en la identificación de bienes arqueológicos.
+              </p>
+            </div>
           </div>
+
           <div class="project-item">
-            <div class="project-icon">⚖️</div>
-            <h3>Autoridades</h3>
-            <p>
-              Supervisión de la actividad, gestión de zonas protegidas y generación
-              de informes para la administración del patrimonio.
-            </p>
+            <div class="project-icon-wrapper">
+              <div class="project-icon">⚖️</div>
+            </div>
+            <div class="project-content">
+              <h3>Autoridades</h3>
+              <p>
+                Supervisión de la actividad, gestión de zonas protegidas y generación
+                de informes para la administración del patrimonio.
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- How it Works Section -->
+    <!-- How it Works - Horizontal Timeline -->
     <section id="como-funciona" class="how-it-works">
       <div class="container">
         <div class="section-header">
@@ -142,26 +152,27 @@
             <div class="step-content">
               <h3>Registro del hallazgo</h3>
               <p>
-                Los ciudadanos registran hallazgos con la información más precisa posible.
+                Los ciudadanos registran hallazgos con información precisa y fotografías del descubrimiento.
               </p>
             </div>
           </div>
+
           <div class="step">
             <div class="step-number">2</div>
             <div class="step-content">
               <h3>Validación profesional</h3>
               <p>
-                Uno o varios profesionales técnicos revisan, clasifican y validan el mismo.
+                Profesionales técnicos revisan, clasifican y validan el hallazgo arqueológico.
               </p>
             </div>
           </div>
+
           <div class="step">
             <div class="step-number">3</div>
             <div class="step-content">
               <h3>Supervisión oficial</h3>
               <p>
-                Las autoridades supervisan el proceso y toman las medidas
-                necesarias para la protección del patrimonio de acuerdo a la legalidad vigente.
+                Las autoridades toman medidas necesarias para la protección según la legalidad vigente.
               </p>
             </div>
           </div>
@@ -169,33 +180,56 @@
       </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Features - 2 Column Modern Layout -->
     <section class="features">
       <div class="container">
         <div class="section-header">
-          <h2>Funcionalidades</h2>
+          <h2>Funcionalidades principales</h2>
         </div>
 
         <div class="features-grid">
           <div class="feature">
             <div class="feature-icon">📍</div>
-            <h3>Geolocalización</h3>
-            <p>Registro preciso de ubicaciones de hallazgos</p>
+            <div class="feature-text">
+              <h3>Geolocalización precisa</h3>
+              <p>
+                Registro exacto de ubicaciones con coordenadas GPS para una
+                documentación arqueológica rigurosa y profesional.
+              </p>
+            </div>
           </div>
+
           <div class="feature">
             <div class="feature-icon">🗺️</div>
-            <h3>Zonas protegidas</h3>
-            <p>Mapa actualizado de áreas de protección</p>
+            <div class="feature-text">
+              <h3>Zonas protegidas</h3>
+              <p>
+                Mapa actualizado de áreas de protección patrimonial y
+                delimitación de zonas arqueológicas sensibles.
+              </p>
+            </div>
           </div>
+
           <div class="feature">
             <div class="feature-icon">📊</div>
-            <h3>Estadísticas</h3>
-            <p>Informes y análisis de actividad arqueológica</p>
+            <div class="feature-text">
+              <h3>Análisis y estadísticas</h3>
+              <p>
+                Informes detallados y visualización de datos sobre
+                actividad arqueológica en tiempo real.
+              </p>
+            </div>
           </div>
+
           <div class="feature">
             <div class="feature-icon">🏆</div>
-            <h3>Reputación</h3>
-            <p>Reconocimiento al ciudadano por comportamiento cívico responsable</p>
+            <div class="feature-text">
+              <h3>Sistema de reputación</h3>
+              <p>
+                Reconocimiento a ciudadanos por su comportamiento cívico
+                responsable en la preservación del patrimonio.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -207,12 +241,12 @@
         <div class="cta-content">
           <h2>Defiende la historia</h2>
           <p>
-            Forma parte de una nación comprometida con la preservación
+            Forma parte de una comunidad comprometida con la preservación
             de nuestro patrimonio histórico y cultural.
           </p>
           <div class="cta-actions">
             <a href="/register" class="btn btn-primary btn-large">
-              Registrarme
+              Únete Ahora
             </a>
           </div>
         </div>
@@ -227,21 +261,34 @@
             <h3>DIGREPORT</h3>
             <p>
               Plataforma colaborativa para la gestión del patrimonio histórico español.
+              Conectando ciudadanos, profesionales y autoridades.
             </p>
           </div>
+
           <div class="footer-section">
             <h4>Marco Legal</h4>
             <ul>
-              <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-1985-12534">Ley 16/1985 del Patrimonio Histórico Español</a></li>
-              <p>Normativas Autonómicas</p>
+              <li>
+                <a href="https://www.boe.es/buscar/act.php?id=BOE-A-1985-12534" target="_blank">
+                  Ley 16/1985 del Patrimonio Histórico Español
+                </a>
+              </li>
+              <li>
+                <a href="#" target="_blank">Normativas Autonómicas</a>
+              </li>
             </ul>
           </div>
+
           <div class="footer-section">
-            <h4>Contacto</h4>
+            <h4>Enlaces</h4>
             <ul>
+              <li><a href="#sobre-proyecto">Sobre el Proyecto</a></li>
+              <li><a href="#como-funciona">Cómo Funciona</a></li>
+              <li><a href="/register">Registro</a></li>
             </ul>
           </div>
         </div>
+
         <div class="footer-bottom">
           <p>&copy; 2025 DIGREPORT - TFG Marcos Francisco Varela Marcos</p>
         </div>
@@ -255,6 +302,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import UserMenu from './UserMenu.vue'
+import logoDigreport from '../assets/logodigreport.png'
 import './Home.css'
 
 const router = useRouter()
@@ -271,7 +319,6 @@ const handleLogout = () => {
   router.push('/')
 }
 
-// Verificar estado de autenticación al montar
 onMounted(() => {
   authStore.checkAuthStatus()
 })
