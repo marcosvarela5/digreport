@@ -1,5 +1,6 @@
 package es.marcos.digreport.application.port.out;
 
+import es.marcos.digreport.domain.enums.UserRole;
 import es.marcos.digreport.domain.model.Member;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface MemberRepositoryPort {
     Optional<Member> findByDni(String dni);
     Boolean existsByEmail(String email);
     Boolean existsByDni(String dni);
+    Long countByRole(UserRole role);
+    Long count();
 }

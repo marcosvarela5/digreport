@@ -1,6 +1,7 @@
 package es.marcos.digreport.infrastructure.persistence.repository;
 
 import es.marcos.digreport.application.port.out.MemberRepositoryPort;
+import es.marcos.digreport.domain.enums.UserRole;
 import es.marcos.digreport.domain.model.Member;
 import es.marcos.digreport.infrastructure.persistence.entities.MemberEntityJpa;
 import es.marcos.digreport.infrastructure.persistence.mapper.MemberMapper;
@@ -67,4 +68,14 @@ public class MemberRepositoryAdapter implements MemberRepositoryPort {
     public Boolean existsByDni(String dni) {
         return repository.findByDni(dni).isPresent();
     }
+
+    @Override
+    public Long countByRole(UserRole role) {
+        return repository.countByRole(role);
+    }
+    @Override
+    public Long count() {
+        return repository.count();
+    }
+
 }

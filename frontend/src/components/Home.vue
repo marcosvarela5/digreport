@@ -60,6 +60,12 @@
           </div>
           <h3>DIGREPORT</h3>
           <h4>Tecnología al servicio de nuestra historia</h4>
+
+          <!-- 🆕 Badge de validación -->
+          <div class="validation-badge">
+            <span class="badge-icon">✓</span>
+            Sistema de validación profesional
+          </div>
         </div>
       </div>
 
@@ -75,11 +81,37 @@
         </p>
         <div class="hero-actions">
           <router-link to="/register-find" class="btn btn-primary btn-large">
+            <span class="btn-icon">📍</span>
             Registrar Hallazgo
           </router-link>
           <a href="#sobre-proyecto" class="btn btn-outline btn-large">
+            <span class="btn-icon">📖</span>
             Conocer Más
           </a>
+        </div>
+
+        <!-- 🆕 ESTADÍSTICAS -->
+        <div class="hero-stats" v-if="!statsLoading">
+          <div class="stat">
+            <span class="stat-number">+{{ stats.totalFinds }}</span>
+            <span class="stat-label">Hallazgos Registrados</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">+{{ stats.totalArchaeologists }}</span>
+            <span class="stat-label">Arqueólogos Activos</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">{{ stats.validationRate.toFixed(0) }}%</span>
+            <span class="stat-label">Tasa de Validación</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">+{{ stats.totalCitizens }}</span>
+            <span class="stat-label">personas activas</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">+{{ stats.pendingFinds }}</span>
+            <span class="stat-label">hallazgos en estudio</span>
+          </div>
         </div>
       </div>
     </section>
@@ -114,7 +146,7 @@
               <div class="project-icon">🔬</div>
             </div>
             <div class="project-content">
-              <h3>Arqueólogos</h3>
+              <h3>Profesionales</h3>
               <p>
                 Supervisan los hallazgos reportados por ciudadanos y
                 colaboran en la identificación de bienes arqueológicos.
@@ -303,7 +335,44 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import UserMenu from './UserMenu.vue'
 import logoDigreport from '../assets/logodigreport.png'
+import {apiClient} from "@/services/api.ts";
 import './Home.css'
+
+const stats = ref({
+  totalFinds: 0,
+  totalArchaeologists: 0,
+  validationRate: 0,
+  totalCitizens: 0,      // 🆕
+  pendingFinds: 0        // 🆕
+})
+
+const statsLoading = ref(true)
+
+const loadStats = async () => {
+  try {
+    statsLoading.value = true
+    const response = await apiClient.get('/api/stats/public')
+
+    stats.value = {
+      totalFinds: response.data.totalFinds || 0,
+      totalArchaeologists: response.data.totalArchaeologists || 0,
+      validationRate: response.data.validationRate || 0,
+      totalCitizens: response.data.totalCitizens || 0,      // 🆕
+      pendingFinds: response.data.pendingFinds || 0         // 🆕
+    }
+  } catch (error) {
+    console.error('Error cargando estadísticas:', error)
+    stats.value = {
+      totalFinds: 0,
+      totalArchaeologists: 0,
+      validationRate: 0,
+      totalCitizens: 0,
+      pendingFinds: 0
+    }
+  } finally {
+    statsLoading.value = false
+  }
+}
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -321,5 +390,6 @@ const handleLogout = () => {
 
 onMounted(() => {
   authStore.checkAuthStatus()
+  loadStats()
 })
 </script>

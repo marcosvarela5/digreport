@@ -720,6 +720,102 @@
     font-weight: 300;
 }
 
+/* 🆕 MEJORAS HERO */
+
+/* Iconos en botones */
+.btn-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1em;
+    display: inline-block;
+}
+
+/* Badge de validación en la card */
+.validation-badge {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.badge-icon {
+    font-size: 1.2rem;
+    background: white;
+    color: #10b981;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* 🆕 ESTADÍSTICAS - Adaptadas a tu diseño */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold-accent);
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.stat:hover .stat-number {
+    transform: scale(1.1);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive para stats */
+@media (max-width: 1024px) {
+    .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-stats {
+        padding-top: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+}
+
 /* ============ FOOTER MINIMALISTA ============ */
 .footer {
     background: var(--stone-dark);

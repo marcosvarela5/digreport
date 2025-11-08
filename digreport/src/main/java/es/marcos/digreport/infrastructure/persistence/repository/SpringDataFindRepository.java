@@ -18,4 +18,6 @@ public interface SpringDataFindRepository extends JpaRepository<FindEntityJpa, L
     Boolean existsByReporterId(Long reporterId);
 
     List<FindEntityJpa> findByValidatedByOrderByDiscoveredAtDesc(Long validatedBy);
+
+    Long countByStatus(FindValidationStatus status);
 }

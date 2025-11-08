@@ -80,4 +80,14 @@ public class FindRepositoryAdapter implements FindRepositoryPort {
         return repository.existsByReporterId(reporterId);
     }
 
+    @Override
+    public Long countByStatus(FindValidationStatus status) {
+        return repository.countByStatus(status);
+    }
+
+    @Override
+    public Long count(){
+        return repository.count();
+    }
+
 }
