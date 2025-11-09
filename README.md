@@ -100,6 +100,9 @@ Este proyecto forma parte del Trabajo de Fin de Grado de Marcos Varela y su uso 
 #### Panel de administración 3
 <img src="./docs/digreport_adminpanel_3.png" width="750">
 
+#### Panel de administración 3
+<img src="./docs/digreport_adminpanel_4.png" width="750">
+
 ### Informes (usuarios)
 #### Home
 <img src="./docs/digreport_home.png" width="750">
