@@ -59,13 +59,38 @@
           <div class="card-icon">
             <img :src="logoDigreport" alt="DIGREPORT" class="card-icon-img">
           </div>
-          <h3>DIGREPORT</h3>
-          <h4>Tecnología al servicio de nuestra historia</h4>
 
-          <!-- 🆕 Badge de validación -->
-          <div class="validation-badge">
-            <span class="badge-icon">✓</span>
-            Sistema de validación profesional
+          <!-- 🆕 TOP CONTRIBUIDORES -->
+          <div class="top-contributors" v-if="!rankingLoading && topContributors.length > 0">
+            <h4 class="contributors-title">Mejores DIGREPORTERS</h4>
+            <div class="contributors-list">
+              <div
+                  v-for="(contributor, index) in topContributors"
+                  :key="index"
+                  class="contributor-item"
+              >
+                <div class="contributor-rank">
+                  <span class="rank-medal" v-if="index === 0"></span>
+                  <span class="rank-medal" v-else-if="index === 1"></span>
+                  <span class="rank-medal" v-else-if="index === 2"></span>
+                  <span class="rank-number" v-else>{{ index + 1 }}</span>
+                </div>
+                <div class="contributor-info">
+                  <span class="contributor-name">{{ contributor.name }}</span>
+                  <span class="contributor-location">{{ contributor.ccaa }}</span>
+                </div>
+                <div class="contributor-points">
+                  <span class="points-value">{{ contributor.reputation }}</span>
+                  <span class="points-label">pts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading para ranking -->
+          <div class="contributors-loading" v-if="rankingLoading">
+            <div class="loading-spinner"></div>
+            <p>Cargando ranking...</p>
           </div>
         </div>
       </div>
@@ -343,11 +368,31 @@ const stats = ref({
   totalFinds: 0,
   totalArchaeologists: 0,
   validationRate: 0,
-  totalCitizens: 0,      // 🆕
-  pendingFinds: 0        // 🆕
+  totalCitizens: 0,
+  pendingFinds: 0
 })
 
+const topContributors = ref<Array<{
+  name: string
+  reputation: number
+  ccaa: string
+}>>([])
+
 const statsLoading = ref(true)
+const rankingLoading = ref(true)
+
+const loadTopContributors = async () => {
+  try {
+    rankingLoading.value = true
+    const response = await apiClient.get('/api/members/ranking/public?limit=5')
+    topContributors.value = response.data
+  } catch (error) {
+    console.error('Error cargando ranking:', error)
+    topContributors.value = []
+  } finally {
+    rankingLoading.value = false
+  }
+}
 
 const loadStats = async () => {
   try {
@@ -392,5 +437,6 @@ const handleLogout = () => {
 onMounted(() => {
   authStore.checkAuthStatus()
   loadStats()
+  loadTopContributors()
 })
 </script>

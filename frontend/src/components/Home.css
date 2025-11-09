@@ -768,6 +768,243 @@
     border-top: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Top Contributors */
+.top-contributors {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contributors-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #dab600;
+    margin: 0 0 16px 0;
+    text-align: center;
+    text-shadow: 0 0 10px rgb(255, 244, 16);
+}
+
+.contributors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contributor-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contributor-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+/* Ranking - Medallas */
+.contributor-rank {
+    min-width: 32px;
+    text-align: center;
+}
+
+.rank-medal {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.rank-number {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #00CED1;
+    text-shadow: 0 0 10px #00CED1;
+}
+
+/* Info del contribuidor */
+.contributor-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Nombres con colores y efectos glow según posición */
+.contributor-item:nth-child(1) .contributor-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4a7c7e; /* Dorado */
+    text-shadow:
+            0 0 10px #4a7c7e,
+            0 0 20px #FFD700,
+            0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+.contributor-item:nth-child(2) .contributor-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #C0C0C0; /* Plata */
+    text-shadow:
+            0 0 10px #C0C0C0,
+            0 0 20px #C0C0C0,
+            0 0 30px rgba(192, 192, 192, 0.5);
+}
+
+.contributor-item:nth-child(3) .contributor-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #CD7F32; /* Bronce */
+    text-shadow:
+            0 0 10px #CD7F32,
+            0 0 20px #CD7F32,
+            0 0 30px rgba(205, 127, 50, 0.5);
+}
+
+/* Resto de posiciones - Cian */
+.contributor-item:nth-child(n+4) .contributor-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #00CED1; /* Cian */
+    text-shadow:
+            0 0 10px #00CED1,
+            0 0 20px #00CED1,
+            0 0 30px rgba(0, 206, 209, 0.5);
+}
+
+.contributor-location {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Puntos */
+.contributor-points {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Puntos con glow según posición */
+.contributor-item:nth-child(1) .points-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #4a7c7e;
+    text-shadow:
+            0 0 10px #FFD700,
+            0 0 20px #FFD700;
+}
+
+.contributor-item:nth-child(2) .points-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #C0C0C0;
+    text-shadow:
+            0 0 10px #C0C0C0,
+            0 0 20px #C0C0C0;
+}
+
+.contributor-item:nth-child(3) .points-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #CD7F32;
+    text-shadow:
+            0 0 10px #CD7F32,
+            0 0 20px #CD7F32;
+}
+
+.contributor-item:nth-child(n+4) .points-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #00CED1;
+    text-shadow:
+            0 0 10px #00CED1,
+            0 0 20px #00CED1;
+}
+
+.points-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Bordes con glow según posición */
+.contributor-item:nth-child(1) {
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.contributor-item:nth-child(2) {
+    border: 1px solid rgba(192, 192, 192, 0.3);
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.2);
+}
+
+.contributor-item:nth-child(3) {
+    border: 1px solid rgba(205, 127, 50, 0.3);
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.2);
+}
+
+.contributor-item:nth-child(n+4) {
+    border: 1px solid rgba(0, 206, 209, 0.3);
+    box-shadow: 0 0 15px rgba(0, 206, 209, 0.2);
+}
+
+/* Hover intensifica el glow */
+.contributor-item:hover {
+    box-shadow: 0 0 25px currentColor;
+}
+
+/* Loading del ranking */
+.contributors-loading {
+    padding: 24px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #00CED1;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 15px #00CED1;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.contributors-loading p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 0 8px rgba(0, 206, 209, 0.5);
+}
+
+@keyframes fadeInGlow {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contributor-item {
+    animation: fadeInGlow 0.5s ease forwards;
+}
+
+.contributor-item:nth-child(1) { animation-delay: 0.1s; }
+.contributor-item:nth-child(2) { animation-delay: 0.2s; }
+.contributor-item:nth-child(3) { animation-delay: 0.3s; }
+.contributor-item:nth-child(4) { animation-delay: 0.4s; }
+.contributor-item:nth-child(5) { animation-delay: 0.5s; }
+
 .stat {
     text-align: center;
 }
