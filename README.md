@@ -161,3 +161,13 @@ A continuación se muestran los principales módulos de la API (con sus endpoint
 #### Validaciones pendientes
 <img src="./docs/digreport_pendingvalidations.png" width="750">
 
+### Mapa interactivo
+#### Vista del mapa
+<img src="./docs/map1.png" width="900">
+
+#### Formulario registro área protegida
+<img src="./docs/mapform1.png" width="400">
+
+#### Formulario registro monumento o bien protegido
+<img src="./docs/mapform2.png" width="400">
+
