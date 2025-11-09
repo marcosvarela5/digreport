@@ -76,8 +76,45 @@ npm run dev
 
 Este proyecto forma parte del Trabajo de Fin de Grado de Marcos Varela y su uso está restringido al contexto académico correspondiente.  
 
+## 📘 Documentación de la API [OpenAPI 3.0]
 
-  
+La API de **DIGREPORT** está documentada siguiendo el estándar **OpenAPI 3.0**, proporcionando un acceso claro y estructurado a los diferentes endpoints del sistema.  
+
+A continuación se muestran los principales módulos de la API (con sus endpoints visualizados mediante Swagger UI):
+
+---
+
+### 🔐 Autenticación (`/api/auth`)
+<img src="./docs/api/auth.png" width="750" alt="API Auth"/>
+
+---
+
+### 👤 Perfil de usuario (`/api/profile`)
+<img src="./docs/api/profile.png" width="750" alt="API Profile"/>
+
+---
+
+### 🧾 Miembros (`/api/members`)
+<img src="./docs/api/members.png" width="750" alt="API Members"/>
+
+---
+
+### 🏺 Hallazgos (`/api/finds`)
+<img src="./docs/api/finds.png" width="750" alt="API Finds"/>
+
+---
+
+### 🗺️ Áreas protegidas (`/api/protected-areas`)
+<img src="./docs/api/protectedareas.png" width="750" alt="API Protected Areas"/>
+
+---
+
+### 📊 Estadísticas y panel de autoridad (`/api/stats`)
+<img src="./docs/api/stats.png" width="750" alt="API Stats"/>
+
+
+
+
 ## 🖥️ Capturas de pantalla
 
 ### Autenticación
