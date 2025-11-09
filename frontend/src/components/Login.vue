@@ -4,7 +4,7 @@
     <div class="login-card">
       <div class="login-header">
         <h1 class="login-title">DIGREPORT</h1>
-        <p class="login-subtitle">Iniciar Sesión</p>
+        <p class="login-subtitle">Iniciar sesión</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="login-form">

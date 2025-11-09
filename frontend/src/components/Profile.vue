@@ -3,14 +3,14 @@
     <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
     <div class="profile-card">
       <div class="profile-header">
-        <h1 class="profile-title">Mi Perfil</h1>
+        <h1 class="profile-title">Mi perfil</h1>
         <p class="profile-subtitle">Actualiza tu información personal</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="profile-form">
         <!-- Datos personales -->
         <div class="form-section">
-          <h3 class="section-title">Datos Personales</h3>
+          <h3 class="section-title">Datos personales</h3>
 
           <div class="form-row">
             <div class="form-group">
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-              <label for="surname1" class="form-label">Primer Apellido</label>
+              <label for="surname1" class="form-label">Primer apellido</label>
               <input
                   id="surname1"
                   v-model="form.surname1"
@@ -47,7 +47,7 @@
           </div>
 
           <div class="form-group">
-            <label for="surname2" class="form-label">Segundo Apellido</label>
+            <label for="surname2" class="form-label">Segundo apellido</label>
             <input
                 id="surname2"
                 v-model="form.surname2"
@@ -76,7 +76,7 @@
             </div>
 
             <div class="form-group">
-              <label for="mobile" class="form-label">Teléfono Móvil</label>
+              <label for="mobile" class="form-label">Teléfono móvil</label>
               <input
                   id="mobile"
                   v-model="form.mobile"
@@ -128,7 +128,7 @@
 
         <!-- Datos de acceso -->
         <div class="form-section">
-          <h3 class="section-title">Datos de Acceso</h3>
+          <h3 class="section-title">Datos de acceso</h3>
 
           <div class="form-group">
             <label for="email" class="form-label">Email</label>

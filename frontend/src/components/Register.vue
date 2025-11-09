@@ -10,7 +10,7 @@
       <form @submit.prevent="handleSubmit" class="register-form">
         <!-- Datos personales -->
         <div class="form-section">
-          <h3 class="section-title">Datos Personales</h3>
+          <h3 class="section-title">Datos personales</h3>
 
           <div class="form-row">
             <div class="form-group">
@@ -30,7 +30,7 @@
             </div>
 
             <div class="form-group">
-              <label for="surname1" class="form-label">Primer Apellido *</label>
+              <label for="surname1" class="form-label">Primer apellido *</label>
               <input
                   id="surname1"
                   v-model="form.surname1"
@@ -47,7 +47,7 @@
           </div>
 
           <div class="form-group">
-            <label for="surname2" class="form-label">Segundo Apellido</label>
+            <label for="surname2" class="form-label">Segundo apellido</label>
             <input
                 id="surname2"
                 v-model="form.surname2"
@@ -76,7 +76,7 @@
             </div>
 
             <div class="form-group">
-              <label for="mobile" class="form-label">Teléfono Móvil *</label>
+              <label for="mobile" class="form-label">Teléfono móvil *</label>
               <input
                   id="mobile"
                   v-model="form.mobile"
@@ -102,7 +102,7 @@
                 @change="clearFieldError('ccaa')"
                 @blur="validateField('ccaa')"
             >
-              <option value="">Selecciona tu comunidad autónoma</option>
+              <option value="">Selecciona tu Comunidad Autónoma</option>
               <option value="Andalucía">Andalucía</option>
               <option value="Aragón">Aragón</option>
               <option value="Asturias">Asturias</option>
@@ -129,7 +129,7 @@
 
         <!-- Datos de acceso -->
         <div class="form-section">
-          <h3 class="section-title">Datos de Acceso</h3>
+          <h3 class="section-title">Datos de acceso</h3>
 
           <div class="form-row">
             <div class="form-group">
@@ -149,7 +149,7 @@
             </div>
 
             <div class="form-group">
-              <label for="confirmEmail" class="form-label">Confirmar Email *</label>
+              <label for="confirmEmail" class="form-label">Confirmar email *</label>
               <input
                   id="confirmEmail"
                   v-model="form.confirmEmail"
@@ -192,7 +192,7 @@
             </div>
 
             <div class="form-group">
-              <label for="confirmPassword" class="form-label">Confirmar Contraseña *</label>
+              <label for="confirmPassword" class="form-label">Confirmar contraseña *</label>
               <div class="password-input-wrapper">
                 <input
                     id="confirmPassword"

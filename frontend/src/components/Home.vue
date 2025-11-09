@@ -20,7 +20,7 @@
                 <UserMenu />
               </template>
               <template v-else>
-                <a href="/login" class="btn btn-primary">Iniciar Sesión</a>
+                <a href="/login" class="btn btn-primary">Iniciar sesión</a>
                 <a href="/register" class="btn btn-secondary">Registro</a>
               </template>
             </div>
@@ -37,15 +37,15 @@
 
         <div v-show="isMenuOpen" class="mobile-menu">
           <a href="#inicio" class="mobile-link" @click="toggleMenu">Inicio</a>
-          <a href="#sobre-proyecto" class="mobile-link" @click="toggleMenu">El Proyecto</a>
-          <a href="#como-funciona" class="mobile-link" @click="toggleMenu">Cómo Funciona</a>
+          <a href="#sobre-proyecto" class="mobile-link" @click="toggleMenu">El proyecto</a>
+          <a href="#como-funciona" class="mobile-link" @click="toggleMenu">Cómo funciona</a>
 
           <template v-if="authStore.isAuthenticated">
-            <router-link to="/profile" class="mobile-link" @click="toggleMenu">Mi Perfil</router-link>
-            <button @click="handleLogout" class="mobile-link logout">Cerrar Sesión</button>
+            <router-link to="/profile" class="mobile-link" @click="toggleMenu">Perfil</router-link>
+            <button @click="handleLogout" class="mobile-link logout">Cerrar sesión</button>
           </template>
           <template v-else>
-            <router-link to="/login" class="mobile-link primary" @click="toggleMenu">Iniciar Sesión</router-link>
+            <router-link to="/login" class="mobile-link primary" @click="toggleMenu">Iniciar sesión</router-link>
             <router-link to="/register" class="mobile-link secondary" @click="toggleMenu">Registro</router-link>
           </template>
         </div>
@@ -95,15 +95,15 @@
         <div class="hero-stats" v-if="!statsLoading">
           <div class="stat">
             <span class="stat-number">+{{ stats.totalFinds }}</span>
-            <span class="stat-label">Hallazgos Registrados</span>
+            <span class="stat-label">hallazgos reportados</span>
           </div>
           <div class="stat">
             <span class="stat-number">+{{ stats.totalArchaeologists }}</span>
-            <span class="stat-label">Arqueólogos Activos</span>
+            <span class="stat-label">profesionales activos</span>
           </div>
           <div class="stat">
             <span class="stat-number">{{ stats.validationRate.toFixed(0) }}%</span>
-            <span class="stat-label">Tasa de Validación</span>
+            <span class="stat-label">tasa de validación</span>
           </div>
           <div class="stat">
             <span class="stat-number">+{{ stats.totalCitizens }}</span>
@@ -279,7 +279,7 @@
           </p>
           <div class="cta-actions">
             <a href="/register" class="btn btn-primary btn-large">
-              Únete Ahora
+              Únete ahora
             </a>
           </div>
         </div>
@@ -307,7 +307,7 @@
                 </a>
               </li>
               <li>
-                <a href="#" target="_blank">Normativas Autonómicas</a>
+                <a href="#" target="_blank">Normativas autonómicas</a>
               </li>
             </ul>
           </div>
@@ -315,8 +315,8 @@
           <div class="footer-section">
             <h4>Enlaces</h4>
             <ul>
-              <li><a href="#sobre-proyecto">Sobre el Proyecto</a></li>
-              <li><a href="#como-funciona">Cómo Funciona</a></li>
+              <li><a href="#sobre-proyecto">Sobre el proyecto</a></li>
+              <li><a href="#como-funciona">Cómo funciona</a></li>
               <li><a href="/register">Registro</a></li>
             </ul>
           </div>

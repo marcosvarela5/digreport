@@ -3,14 +3,14 @@
     <div class="my-finds-header">
       <div class="header-content">
         <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
-        <h1 class="page-title">Mis Hallazgos</h1>
+        <h1 class="page-title">Mis hallazgos</h1>
         <p class="page-subtitle">Gestiona y consulta tus hallazgos registrados</p>
       </div>
       <router-link to="/register-find" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
           <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
         </svg>
-        Nuevo Hallazgo
+        Nuevo hallazgo
       </router-link>
     </div>
 
@@ -29,7 +29,7 @@
         <h3>No tienes hallazgos registrados</h3>
         <p>Comienza a registrar hallazgos arqueológicos para ayudar a preservar nuestro patrimonio.</p>
         <router-link to="/register-find" class="btn btn-primary btn-large">
-          Registrar Primer Hallazgo
+          Registrar primer hallazgo
         </router-link>
       </div>
 

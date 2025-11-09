@@ -9,10 +9,10 @@
 
       <form @submit.prevent="handleSubmit" class="register-find-form">
         <div class="form-section">
-          <h3 class="section-title">Información del Hallazgo</h3>
+          <h3 class="section-title">Información del hallazgo</h3>
 
           <div class="form-group">
-            <label for="discoveredAt" class="form-label">Fecha del Descubrimiento *</label>
+            <label for="discoveredAt" class="form-label">Fecha del descubrimiento *</label>
             <input
                 id="discoveredAt"
                 v-model="form.discoveredAt"
@@ -74,7 +74,7 @@
           </div>
 
           <div class="form-group">
-            <label for="description" class="form-label">Descripción del Hallazgo *</label>
+            <label for="description" class="form-label">Descripción del hallazgo *</label>
             <textarea
                 id="description"
                 v-model="form.description"

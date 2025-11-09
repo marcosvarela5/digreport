@@ -44,7 +44,7 @@
 
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">Fecha de Descubrimiento</span>
+                <span class="info-label">Fecha de descubrimiento</span>
                 <span class="info-value">{{ formatDate(find.discoveredAt) }}</span>
               </div>
 
@@ -54,7 +54,7 @@
               </div>
 
               <div class="info-item">
-                <span class="info-label">Fecha de Registro</span>
+                <span class="info-label">Fecha de registro</span>
                 <span class="info-value">{{ formatDate(find.createdAt) }}</span>
               </div>
             </div>
@@ -101,7 +101,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="section-icon">
                 <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
               </svg>
-              Descripción del Hallazgo
+              Descripción del hallazgo
             </h2>
 
             <div class="description-box">
@@ -176,7 +176,7 @@
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h2>Validar Hallazgo #{{ find?.id }}</h2>
+          <h2>Validar hallazgo #{{ find?.id }}</h2>
           <button @click="closeModal" class="modal-close">&times;</button>
         </div>
 
