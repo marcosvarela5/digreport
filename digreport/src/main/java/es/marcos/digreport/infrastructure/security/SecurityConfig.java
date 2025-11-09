@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .requestMatchers("/api/protected-areas/**").permitAll()
                         .requestMatchers("/api/authorities/**").hasRole(UserRole.AUTHORITY.name())
+                        .requestMatchers("api/members/ranking/public/**").permitAll()
 
                         .anyRequest().authenticated()
                 )

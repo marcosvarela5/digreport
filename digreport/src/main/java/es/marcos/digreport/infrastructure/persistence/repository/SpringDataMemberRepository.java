@@ -13,5 +13,5 @@ public interface SpringDataMemberRepository extends JpaRepository<MemberEntityJp
     Optional<MemberEntityJpa> findByEmail(String email);
     Optional<MemberEntityJpa> findByDni(String dni);
     Long countByRole(UserRole role);
-    List<MemberEntityJpa> findTopByOrderByReputationDesc(Pageable pageable);
+    List<MemberEntityJpa> findAllByOrderByReputationDesc(Pageable pageable);
 }

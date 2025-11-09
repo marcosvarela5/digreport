@@ -81,9 +81,9 @@ public class MemberRepositoryAdapter implements MemberRepositoryPort {
     }
 
     @Override
-    public List<Member> findTopByReputation(int limit) {
+    public List<Member> findAllByReputation(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
-        return repository.findTopByOrderByReputationDesc(pageable).stream()
+        return repository.findAllByOrderByReputationDesc(pageable).stream()
                 .map(MemberMapper::toDomain)
                 .toList();
     }

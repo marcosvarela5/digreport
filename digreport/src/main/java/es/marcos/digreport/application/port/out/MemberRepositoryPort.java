@@ -2,6 +2,7 @@ package es.marcos.digreport.application.port.out;
 
 import es.marcos.digreport.domain.enums.UserRole;
 import es.marcos.digreport.domain.model.Member;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,5 @@ public interface MemberRepositoryPort {
     Boolean existsByDni(String dni);
     Long countByRole(UserRole role);
     Long count();
-    List<Member> findTopByReputation(int limit);
+    List<Member> findAllByReputation(int limit);
 }

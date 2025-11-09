@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public List<Member> getTopByReputation(int limit) {
-        return memberRepository.findTopByReputation(limit);
+        return memberRepository.findAllByReputation(limit);
     }
 
     @Override

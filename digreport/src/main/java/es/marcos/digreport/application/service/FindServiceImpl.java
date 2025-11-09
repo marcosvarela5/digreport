@@ -2,6 +2,7 @@ package es.marcos.digreport.application.service;
 
 import es.marcos.digreport.application.dto.find.*;
 import es.marcos.digreport.application.port.in.FindService;
+import es.marcos.digreport.application.port.in.MemberService;
 import es.marcos.digreport.application.port.out.FindRepositoryPort;
 import es.marcos.digreport.application.port.out.FindReviewNoteRepositoryPort;
 import es.marcos.digreport.application.port.out.MemberRepositoryPort;
@@ -25,11 +26,14 @@ public class FindServiceImpl implements FindService {
     private final FindRepositoryPort findRepository;
     private final MemberRepositoryPort memberRepository;
     private final FindReviewNoteRepositoryPort reviewNoteRepository;
+    private final MemberService memberService;
 
-    public FindServiceImpl(FindRepositoryPort findRepository, MemberRepositoryPort memberRepository, FindReviewNoteRepositoryPort reviewNoteRepository) {
+    public FindServiceImpl(FindRepositoryPort findRepository, MemberRepositoryPort memberRepository,
+                           FindReviewNoteRepositoryPort reviewNoteRepository, MemberService memberService) {
         this.findRepository = findRepository;
         this.memberRepository = memberRepository;
         this.reviewNoteRepository = reviewNoteRepository;
+        this.memberService = memberService;
     }
 
     @Override
@@ -114,9 +118,12 @@ public class FindServiceImpl implements FindService {
             find.setFindPriority(request.priority());
         }
 
-
-
         Find saved = findRepository.save(find);
+
+
+        if (request.status() == FindValidationStatus.VALIDATED) {
+            memberService.incrementReputation(saved.getReporterId(), 1);
+        }
 
         // Guardar comentario si existe
         if (request.reviewComment() != null && !request.reviewComment().isBlank()) {
