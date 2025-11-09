@@ -20,7 +20,7 @@ El sistema permite:
 
 ## 💻 Tecnologías utilizadas
 
-### 🔙 Backend
+### ⚙️​ Backend
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="20"/> **Java 17**
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg" width="20"/> **Spring Boot** (REST API, inyección de dependencias)
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg" width="20"/> **Spring Security + JWT** (autenticación y autorización)
