@@ -29,9 +29,12 @@ public class ProtectedAreaEntityJpa {
     @Column(nullable = false, length = 50)
     private ProtectedAreaType type;
 
-    @Enumerated(EnumType.STRING)  // 🆕
-    @Column(name = "protection_type", nullable = false, length = 50)  // 🆕
-    private ProtectionType protectionType;  // 🆕
+    @Column(length = 7)
+    private String color;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "protection_type", nullable = false, length = 50)
+    private ProtectionType protectionType;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String geometry;

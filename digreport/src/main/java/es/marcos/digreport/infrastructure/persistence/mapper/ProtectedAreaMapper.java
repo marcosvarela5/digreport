@@ -14,9 +14,10 @@ public class ProtectedAreaMapper {
                 .name(area.getName())
                 .description(area.getDescription())
                 .type(area.getType())
-                .protectionType(area.getProtectionType())  // 🆕
+                .protectionType(area.getProtectionType())
                 .geometry(area.getGeometry())
                 .ccaa(area.getCcaa())
+                .color(area.getColor())
                 .createdBy(area.getCreatedBy())
                 .createdAt(area.getCreatedAt())
                 .updatedAt(area.getUpdatedAt())
@@ -31,9 +32,10 @@ public class ProtectedAreaMapper {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getType(),
-                entity.getProtectionType(),  // 🆕
+                entity.getProtectionType(),
                 entity.getGeometry(),
                 entity.getCcaa(),
+                entity.getColor(),
                 entity.getCreatedBy(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),

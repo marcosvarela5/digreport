@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw'
@@ -176,11 +176,38 @@ const formData = ref({
   geometry: ''
 })
 
-onMounted(async () => {
-  initializeMap()
-  await loadProtectedAreas()
-  loading.value = false
+watch(() => formData.value.type, (newType) => {
+
+  formData.value.protectionType = ''
 })
+
+const deleteProtectedAreaById = async (id: number) => {
+  if (!confirm('¿Estás seguro de que quieres eliminar esta zona protegida?')) {
+    return
+  }
+
+  try {
+    await apiClient.delete(`/api/protected-areas/${id}`)
+
+    // Eliminar la capa del mapa
+    drawnItems.eachLayer((layer: any) => {
+      if (layer._areaId === id) {
+        drawnItems.removeLayer(layer)
+      }
+    })
+
+    alert('✅ Zona protegida eliminada correctamente')
+  } catch (error: any) {
+    console.error('Error eliminando zona protegida:', error)
+    const errorMsg = error.response?.data?.message || 'Error al eliminar la zona protegida'
+    alert('❌ ' + errorMsg)
+  }
+}
+
+// Exponer globalmente para el onclick del popup
+// @ts-ignore
+window.deleteProtectedArea = deleteProtectedAreaById
+
 
 const initializeMap = () => {
   if (!mapContainer.value) return
@@ -201,35 +228,6 @@ const initializeMap = () => {
 }
 
 const setupDrawingControls = () => {
-  drawControl = new L.Control.Draw({
-    position: 'topright',
-    edit: {
-      featureGroup: drawnItems,
-      remove: true
-    },
-    draw: {
-      polygon: {
-        allowIntersection: false,
-        shapeOptions: {
-          color: '#e74c3c',
-          fillColor: '#e74c3c',
-          fillOpacity: 0.3,
-          weight: 2
-        },
-        showArea: false,
-        repeatMode: false
-      },
-      marker: {
-        icon: DefaultIcon,
-        repeatMode: false
-      },
-      polyline: false,
-      circle: false,
-      rectangle: false,
-      circlemarker: false
-    }
-  })
-  map.addControl(drawControl)
 
   map.on(L.Draw.Event.CREATED, (event: any) => {
     console.log('✅ Draw Created Event:', event.layerType)
@@ -266,7 +264,6 @@ const addAreaToMap = (area: any) => {
   try {
     const geoJSON = JSON.parse(area.geometry)
 
-    // 🆕 Función helper para mostrar el tipo de protección legible
     const getProtectionTypeLabel = (type: string) => {
       const labels: Record<string, string> = {
         'BIC': 'Bien de Interés Cultural',
@@ -282,19 +279,60 @@ const addAreaToMap = (area: any) => {
       return labels[type] || type
     }
 
+    // 🎨 Usar el color del backend
+    const areaColor = area.color || '#3498db'
+
     const style = {
-      color: area.type === 'AREA' ? '#e74c3c' : '#3498db',
-      fillColor: area.type === 'AREA' ? '#e74c3c' : '#3498db',
+      color: areaColor,
+      fillColor: areaColor,
       fillOpacity: 0.3,
       weight: 2
     }
 
+    // 🎨 Crear icono personalizado con el color para monumentos
+    const customIcon = L.icon({
+      iconUrl: `data:image/svg+xml;base64,${btoa(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="41" viewBox="0 0 25 41">
+          <path fill="${areaColor}" stroke="#fff" stroke-width="2"
+                d="M12.5 0C5.6 0 0 5.6 0 12.5c0 8.4 12.5 28.5 12.5 28.5S25 20.9 25 12.5C25 5.6 19.4 0 12.5 0z"/>
+          <circle cx="12.5" cy="12.5" r="6" fill="#fff"/>
+        </svg>
+      `)}`,
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [0, -41]
+    })
+
     const layer = L.geoJSON(geoJSON, {
       style: style,
       pointToLayer: (_feature, latlng) => {
-        return L.marker(latlng, { icon: DefaultIcon })
+        // Usar icono personalizado para monumentos con el color correspondiente
+        return area.type === 'MONUMENT'
+            ? L.marker(latlng, { icon: customIcon })
+            : L.marker(latlng, { icon: DefaultIcon })
       }
     })
+
+    const deleteButton = isAuthority.value
+        ? `<button
+           onclick="window.deleteProtectedArea(${area.id})"
+           style="
+             margin-top: 10px;
+             padding: 8px 16px;
+             background: #e74c3c;
+             color: white;
+             border: none;
+             border-radius: 6px;
+             cursor: pointer;
+             font-weight: 600;
+             width: 100%;
+           "
+           onmouseover="this.style.background='#c0392b'"
+           onmouseout="this.style.background='#e74c3c'"
+         >
+           🗑️ Eliminar zona
+         </button>`
+        : ''
 
     const popupContent = `
       <div style="min-width: 200px;">
@@ -306,6 +344,7 @@ const addAreaToMap = (area: any) => {
           ${area.ccaa ? `<strong>CCAA:</strong> ${area.ccaa}<br>` : ''}
           <strong>Fecha:</strong> ${new Date(area.createdAt).toLocaleDateString('es-ES')}
         </div>
+        ${deleteButton}
       </div>
     `
 
@@ -320,11 +359,26 @@ const addAreaToMap = (area: any) => {
 }
 
 const startDrawingMonument = () => {
-  new L.Draw.Marker(map, drawControl.options.draw.marker).enable()
+  const drawMarker = new L.Draw.Marker(map, {
+    icon: DefaultIcon,
+    repeatMode: false
+  })
+  drawMarker.enable()
 }
 
 const startDrawingArea = () => {
-  new L.Draw.Polygon(map, drawControl.options.draw.polygon).enable()
+  const drawPolygon = new L.Draw.Polygon(map, {
+    allowIntersection: false,
+    shapeOptions: {
+      color: '#e74c3c',
+      fillColor: '#e74c3c',
+      fillOpacity: 0.3,
+      weight: 2
+    },
+    showArea: false,
+    repeatMode: false
+  })
+  drawPolygon.enable()
 }
 
 const saveProtectedArea = async () => {
@@ -333,10 +387,18 @@ const saveProtectedArea = async () => {
     return
   }
 
+  if (!formData.value.protectionType) {
+    alert('Debes seleccionar un tipo de protección')
+    return
+  }
+
+
   saving.value = true
 
   try {
     const response = await apiClient.post('/api/protected-areas', formData.value)
+
+
 
     if (currentLayer.value) {
       drawnItems.addLayer(currentLayer.value)
@@ -362,7 +424,7 @@ const closeModal = () => {
     description: '',
     ccaa: '',
     type: 'MONUMENT',
-    protectionType: '',  // 🆕
+    protectionType: '',
     geometry: ''
   }
 
@@ -371,4 +433,10 @@ const closeModal = () => {
   }
   currentLayer.value = null
 }
+
+onMounted(async () => {
+  initializeMap()
+  await loadProtectedAreas()
+  loading.value = false
+})
 </script>

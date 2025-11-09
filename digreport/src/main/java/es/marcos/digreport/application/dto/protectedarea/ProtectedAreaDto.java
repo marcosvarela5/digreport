@@ -13,6 +13,7 @@ public record ProtectedAreaDto(
         ProtectionType protectionType,
         String geometry,
         String ccaa,
+        String color,
         Long createdBy,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,

@@ -18,9 +18,10 @@ public class ProtectedArea {
     private String name;
     private String description;
     private ProtectedAreaType type;
-    private ProtectionType protectionType;  // 🆕 BIC, ZEPA, etc
+    private ProtectionType protectionType;
     private String geometry;
     private String ccaa;
+    private String color;
     private Long createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

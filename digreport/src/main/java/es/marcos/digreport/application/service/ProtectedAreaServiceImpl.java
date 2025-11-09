@@ -4,6 +4,7 @@ import es.marcos.digreport.application.dto.protectedarea.CreateProtectedAreaDto;
 import es.marcos.digreport.application.dto.protectedarea.ProtectedAreaDto;
 import es.marcos.digreport.application.port.in.ProtectedAreaService;
 import es.marcos.digreport.application.port.out.ProtectedAreaRepositoryPort;
+import es.marcos.digreport.domain.enums.ProtectionType;
 import es.marcos.digreport.domain.model.ProtectedArea;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +24,17 @@ public class ProtectedAreaServiceImpl implements ProtectedAreaService {
     @Override
     @Transactional
     public ProtectedAreaDto createProtectedArea(CreateProtectedAreaDto dto, Long adminId) {
+        // 🎨 Asignar color automáticamente según tipo de protección
+        String color = getColorByProtectionType(dto.protectionType());
+
         ProtectedArea area = ProtectedArea.builder()
                 .name(dto.name())
                 .description(dto.description())
                 .type(dto.type())
+                .protectionType(dto.protectionType())
                 .geometry(dto.geometry())
                 .ccaa(dto.ccaa())
+                .color(color)  // 🆕 Color automático
                 .createdBy(adminId)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -45,11 +51,16 @@ public class ProtectedAreaServiceImpl implements ProtectedAreaService {
         ProtectedArea area = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Protected area not found"));
 
+        // 🎨 Actualizar color si cambia el tipo de protección
+        String color = getColorByProtectionType(dto.protectionType());
+
         area.setName(dto.name());
         area.setDescription(dto.description());
         area.setType(dto.type());
+        area.setProtectionType(dto.protectionType());
         area.setGeometry(dto.geometry());
         area.setCcaa(dto.ccaa());
+        area.setColor(color);  // 🆕
         area.setUpdatedAt(LocalDateTime.now());
 
         ProtectedArea updated = repository.save(area);
@@ -86,6 +97,24 @@ public class ProtectedAreaServiceImpl implements ProtectedAreaService {
                 .toList();
     }
 
+    private String getColorByProtectionType(ProtectionType protectionType) {
+        return switch (protectionType) {
+
+            // MONUMENTOS
+            case BIC -> "#FFD700";
+            case PATRIMONIO_ARQUEOLOGICO -> "#D2B48C";
+
+            // ÁREAS
+            case LIC -> "#FF8C00";
+            case ZEPA -> "#808080";
+            case RESERVA_BIOSFERA -> "#228B22";
+            case RED_NATURA_2000 -> "#003399";
+            case PARQUE_NACIONAL -> "#FFFF00";
+            case PARQUE_NATURAL -> "#90EE90";
+            case ESPACIO_NATURAL_PROTEGIDO -> "#00CED1";
+        };
+    }
+
     @Override
     @Transactional(readOnly = true)
     public boolean isLocationProtected(double latitude, double longitude) {
@@ -101,6 +130,7 @@ public class ProtectedAreaServiceImpl implements ProtectedAreaService {
                 area.getProtectionType(),
                 area.getGeometry(),
                 area.getCcaa(),
+                area.getColor(),
                 area.getCreatedBy(),
                 area.getCreatedAt(),
                 area.getUpdatedAt(),
