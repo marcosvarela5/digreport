@@ -23,6 +23,7 @@ public class MemberDto {
     private UserRole role;
     private LocalDateTime registerDate;
     private String ccaa;
+    Integer reputation;
 
     public static MemberDto fromEntity(MemberEntityJpa entity) {
         return MemberDto.builder()
@@ -36,6 +37,7 @@ public class MemberDto {
                 .role(entity.getRole())
                 .registerDate(entity.getRegisterDate())
                 .ccaa(entity.getCcaa())
+                .reputation(entity.getReputation())
                 .build();
     }
 
@@ -51,6 +53,7 @@ public class MemberDto {
                 .role(domain.getRole())
                 .registerDate(domain.getRegisterDate())
                 .ccaa(domain.getCcaa())
+                .reputation(domain.getReputation())
                 .build();
     }
 }

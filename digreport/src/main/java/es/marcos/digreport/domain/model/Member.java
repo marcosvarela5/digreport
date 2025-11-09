@@ -21,10 +21,11 @@ public class Member {
     private UserRole role;
     private LocalDateTime registerDate;
     private String ccaa;
+    private Integer reputation;
 
     public Member(Long id, String name, String surname1, String surname2,
                   String email, String dni, String password, String mobile, UserRole role,
-                  LocalDateTime registerDate, String ccaa) {
+                  LocalDateTime registerDate, String ccaa, Integer reputation) {
         this.id = id;
         this.name = name;
         this.surname1 = surname1;
@@ -36,6 +37,7 @@ public class Member {
         this.role = role;
         this.registerDate = registerDate;
         this.ccaa = ccaa;
+        this.reputation = reputation;
     }
 }
 

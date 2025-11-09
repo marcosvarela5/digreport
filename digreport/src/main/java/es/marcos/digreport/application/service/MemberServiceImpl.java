@@ -8,6 +8,7 @@ import es.marcos.digreport.application.port.out.MemberRepositoryPort;
 import es.marcos.digreport.domain.enums.FindValidationStatus;
 import es.marcos.digreport.domain.model.Find;
 import es.marcos.digreport.domain.model.Member;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +21,12 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepositoryPort memberRepository;
     private final FindRepositoryPort findRepository;
+    private final ResourcePatternResolver resourcePatternResolver;
 
-    public MemberServiceImpl(MemberRepositoryPort memberRepository, FindRepositoryPort findRepository) {
+    public MemberServiceImpl(MemberRepositoryPort memberRepository, FindRepositoryPort findRepository, ResourcePatternResolver resourcePatternResolver) {
         this.memberRepository = memberRepository;
         this.findRepository = findRepository;
+        this.resourcePatternResolver = resourcePatternResolver;
     }
 
     @Override
@@ -74,4 +77,22 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByEmail(email)
                 .map(MemberDto::fromDomain);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Member> getTopByReputation(int limit) {
+        return memberRepository.findTopByReputation(limit);
+    }
+
+    @Override
+    @Transactional
+    public void incrementReputation(Long memberId, int points) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        member.setReputation(member.getReputation() + points);
+        memberRepository.save(member);
+    }
+
+
 }

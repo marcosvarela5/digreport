@@ -5,6 +5,8 @@ import es.marcos.digreport.domain.enums.UserRole;
 import es.marcos.digreport.domain.model.Member;
 import es.marcos.digreport.infrastructure.persistence.entities.MemberEntityJpa;
 import es.marcos.digreport.infrastructure.persistence.mapper.MemberMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,14 @@ public class MemberRepositoryAdapter implements MemberRepositoryPort {
     @Override
     public Long count() {
         return repository.count();
+    }
+
+    @Override
+    public List<Member> findTopByReputation(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return repository.findTopByOrderByReputationDesc(pageable).stream()
+                .map(MemberMapper::toDomain)
+                .toList();
     }
 
 }

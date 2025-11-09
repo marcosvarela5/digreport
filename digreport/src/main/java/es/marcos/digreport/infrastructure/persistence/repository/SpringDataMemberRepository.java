@@ -2,8 +2,10 @@ package es.marcos.digreport.infrastructure.persistence.repository;
 
 import es.marcos.digreport.domain.enums.UserRole;
 import es.marcos.digreport.infrastructure.persistence.entities.MemberEntityJpa;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SpringDataMemberRepository extends JpaRepository<MemberEntityJpa, Long> {
@@ -11,4 +13,5 @@ public interface SpringDataMemberRepository extends JpaRepository<MemberEntityJp
     Optional<MemberEntityJpa> findByEmail(String email);
     Optional<MemberEntityJpa> findByDni(String dni);
     Long countByRole(UserRole role);
+    List<MemberEntityJpa> findTopByOrderByReputationDesc(Pageable pageable);
 }

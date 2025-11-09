@@ -22,6 +22,7 @@ public class MemberMapper {
                 .role(member.getRole())
                 .registerDate(member.getRegisterDate())
                 .ccaa(member.getCcaa())
+                .reputation(member.getReputation())
                 .build();
     }
 
@@ -38,7 +39,8 @@ public class MemberMapper {
                 entity.getMobile(),
                 entity.getRole(),
                 entity.getRegisterDate(),
-                entity.getCcaa()
+                entity.getCcaa(),
+                entity.getReputation()
         );
     }
 }

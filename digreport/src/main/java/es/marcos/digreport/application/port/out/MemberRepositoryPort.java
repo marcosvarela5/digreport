@@ -17,4 +17,5 @@ public interface MemberRepositoryPort {
     Boolean existsByDni(String dni);
     Long countByRole(UserRole role);
     Long count();
+    List<Member> findTopByReputation(int limit);
 }

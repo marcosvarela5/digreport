@@ -49,4 +49,7 @@ public class MemberEntityJpa {
 
     @Column(nullable = false)
     private String ccaa;
+
+    @Column(nullable = false)
+    private Integer reputation;
 }

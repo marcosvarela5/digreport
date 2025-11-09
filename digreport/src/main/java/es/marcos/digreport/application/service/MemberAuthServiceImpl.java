@@ -95,7 +95,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
                 userRegistrationCommand.getMobile(),
                 UserRole.USER,
                 LocalDateTime.now(),
-                userRegistrationCommand.getCcaa()
+                userRegistrationCommand.getCcaa(),
+                0
         );
         return memberRepositoryPort.save(member);
     }
