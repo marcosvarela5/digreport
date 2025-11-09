@@ -49,6 +49,12 @@ const router = createRouter({
       path: '/authority',
       name: 'authority',
       component: () => import('../views/AuthorityDashboardView.vue'),
+    },
+    {
+      path: '/protected-areas',
+      name: 'ProtectedAreasMap',
+      component: () => import('../views/ProtectedAreasMapView.vue'),
+      meta: { requiresAuth: true }
     }
   ],
 })

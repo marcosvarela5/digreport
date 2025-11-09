@@ -14,6 +14,7 @@
               <a href="#inicio" class="nav-link">Inicio</a>
               <a href="#sobre-proyecto" class="nav-link">Proyecto</a>
               <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+              <router-link to="/protected-areas" class="nav-link">Zonas protegidas</router-link>
 
               <template v-if="authStore.isAuthenticated">
                 <UserMenu />

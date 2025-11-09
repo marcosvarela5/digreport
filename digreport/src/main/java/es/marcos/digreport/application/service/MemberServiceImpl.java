@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,5 +67,11 @@ public class MemberServiceImpl implements MemberService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<MemberDto> findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .map(MemberDto::fromDomain);
     }
 }
