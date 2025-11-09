@@ -1,6 +1,7 @@
 # <img src="https://github.com/marcosvarela5/digreport/blob/f1d0b79f30736209ce783ba72523efd9f014ec2c/frontend/src/assets/logodigreport.png" width="100" alt="DIGREPORT"/> DIGREPORT
 
 **Autor:** Marcos Francisco Varela Marcos  
+**Versión README: **1.0
 
 ---
 
