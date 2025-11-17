@@ -22,5 +22,8 @@ public record CreateFindRequest(
         @Size(min = 10, max = 1000, message = "La descripción debe tener entre 10 y 1000 caracteres")
         String description,
 
-        String ccaa
+        String ccaa,
+
+        Boolean descriptionGeneratedByAi,
+        String aiAnalysisJson
 ) {}

@@ -20,7 +20,6 @@ public class FindEntityJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "discovered_at", nullable = false)
     private LocalDateTime discoveredAt;
 
@@ -31,12 +30,10 @@ public class FindEntityJpa {
     private Double longitude;
 
     @Column(name = "reporter_id", nullable = false)
-    private Long reporterId; // FK a member.id
+    private Long reporterId;
 
-
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
@@ -52,8 +49,11 @@ public class FindEntityJpa {
     @Column(name = "validated_by")
     private Long validatedBy;
 
+    @Column(name = "description_generated_by_ai")
+    private Boolean descriptionGeneratedByAi = false;
 
-    /* ====================  ==================== */
+    @Column(name = "ai_analysis_json", columnDefinition = "TEXT")
+    private String aiAnalysisJson;
 
     @Override
     public boolean equals(Object o) {
@@ -61,6 +61,9 @@ public class FindEntityJpa {
         if (!(o instanceof FindEntityJpa that)) return false;
         return Objects.equals(id, that.id);
     }
+
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

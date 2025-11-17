@@ -4,12 +4,15 @@ import es.marcos.digreport.application.dto.find.*;
 import es.marcos.digreport.application.port.in.FindService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/finds")
@@ -21,15 +24,21 @@ public class FindController {
         this.findService = findService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<FindDto> createFind(
             Authentication authentication,
-            @Valid @RequestBody CreateFindRequest request
+            @RequestPart("data") @Valid CreateFindRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) {
         String email = authentication.getName();
-        FindDto created = findService.createFind(email, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
+        try {
+            FindDto created = findService.createFind(email, request, images);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @GetMapping("/my")
@@ -109,4 +118,36 @@ public class FindController {
         List<FindDto> finds = findService.getMyValidatedFinds(email);
         return ResponseEntity.ok(finds);
     }
+
+    @PostMapping(value = "/analyze-with-ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> analyzeImagesWithAi(
+            @RequestParam("imagenes") List<MultipartFile> imagenes
+    ) {
+        try {
+            // Validación básica
+            if (imagenes == null || imagenes.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "No se proporcionaron imágenes"));
+            }
+
+            if (imagenes.size() > 5) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Máximo 5 imágenes permitidas"));
+            }
+
+            // Llamar al servicio
+            String analysisJson = findService.analyzeImagesWithAi(imagenes);
+
+            // Retornar JSON directamente
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(analysisJson);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
 }

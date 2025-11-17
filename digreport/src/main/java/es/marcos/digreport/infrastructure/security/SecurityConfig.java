@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/protected-areas/**").permitAll()
                         .requestMatchers("/api/authorities/**").hasRole(UserRole.AUTHORITY.name())
                         .requestMatchers("api/members/ranking/public/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
 
                         .anyRequest().authenticated()
                 )

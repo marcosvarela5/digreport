@@ -2,6 +2,7 @@ package es.marcos.digreport.domain.model;
 
 import es.marcos.digreport.domain.enums.FindPriority;
 import es.marcos.digreport.domain.enums.FindValidationStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Find {
 
     private Long id;
@@ -28,6 +30,9 @@ public class Find {
 
     private FindValidationStatus status = FindValidationStatus.PENDING;
     private FindPriority findPriority = FindPriority.MEDIUM;
+
+    private Boolean descriptionGeneratedByAi = false;
+    private String aiAnalysisJson;  // JSON con el análisis completo de la IA
 
     //private List<FindImage> images = new ArrayList<>();
     //private List<FindReviewNote> reviewNotes = new ArrayList<>();

@@ -3,22 +3,27 @@ package es.marcos.digreport.application.service;
 import es.marcos.digreport.application.dto.find.*;
 import es.marcos.digreport.application.port.in.FindService;
 import es.marcos.digreport.application.port.in.MemberService;
+import es.marcos.digreport.application.port.out.AiAnalysisPort;
 import es.marcos.digreport.application.port.out.FindRepositoryPort;
 import es.marcos.digreport.application.port.out.FindReviewNoteRepositoryPort;
 import es.marcos.digreport.application.port.out.MemberRepositoryPort;
 import es.marcos.digreport.domain.enums.FindValidationStatus;
 import es.marcos.digreport.domain.enums.UserRole;
+import es.marcos.digreport.domain.exception.AiAnalysisException;
 import es.marcos.digreport.domain.model.Find;
 import es.marcos.digreport.domain.model.FindReviewNote;
 import es.marcos.digreport.domain.model.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.multipart.MultipartFile;
+import es.marcos.digreport.application.port.out.FileStoragePort;
+import es.marcos.digreport.application.port.out.FindImageRepositoryPort;
+import es.marcos.digreport.domain.model.FindImage;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 public class FindServiceImpl implements FindService {
@@ -27,18 +32,26 @@ public class FindServiceImpl implements FindService {
     private final MemberRepositoryPort memberRepository;
     private final FindReviewNoteRepositoryPort reviewNoteRepository;
     private final MemberService memberService;
+    private final AiAnalysisPort aiAnalysisPort;
+    private final FileStoragePort fileStoragePort;
+    private final FindImageRepositoryPort findImageRepository;
 
     public FindServiceImpl(FindRepositoryPort findRepository, MemberRepositoryPort memberRepository,
-                           FindReviewNoteRepositoryPort reviewNoteRepository, MemberService memberService) {
+                           FindReviewNoteRepositoryPort reviewNoteRepository, MemberService memberService,
+                           AiAnalysisPort aiAnalysisPort,
+                           FileStoragePort fileStoragePort, FindImageRepositoryPort findImageRepository) {
         this.findRepository = findRepository;
         this.memberRepository = memberRepository;
         this.reviewNoteRepository = reviewNoteRepository;
         this.memberService = memberService;
+        this.aiAnalysisPort = aiAnalysisPort;
+        this.findImageRepository = findImageRepository;
+        this.fileStoragePort = fileStoragePort;
     }
 
     @Override
     @Transactional
-    public FindDto createFind(String reporterEmail, CreateFindRequest request) {
+    public FindDto createFind(String reporterEmail, CreateFindRequest request, List<MultipartFile> images) {
         Member reporter = memberRepository.findByEmail(reporterEmail.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -46,6 +59,11 @@ public class FindServiceImpl implements FindService {
             throw new RuntimeException("Solo los ciudadanos pueden registrar hallazgos");
         }
 
+        if (images != null && !images.isEmpty()) {
+            validateImages(images);
+        }
+
+        // 1. Crear y guardar el hallazgo
         Find find = new Find();
         find.setDiscoveredAt(request.discoveredAt());
         find.setLatitude(request.latitude());
@@ -55,8 +73,65 @@ public class FindServiceImpl implements FindService {
         find.setStatus(FindValidationStatus.PENDING);
         find.setCcaa(request.ccaa());
 
+        // Información de IA si existe
+        if (Boolean.TRUE.equals(request.descriptionGeneratedByAi())) {
+            find.setDescriptionGeneratedByAi(true);
+            find.setAiAnalysisJson(request.aiAnalysisJson());
+        }
+
         Find saved = findRepository.save(find);
+
+        // 2. Guardar imágenes si existen
+        if (images != null && !images.isEmpty()) {
+            try {
+                List<FileStoragePort.StoredFileInfo> storedFiles = fileStoragePort.storeMultiple(images);
+
+                List<FindImage> findImages = new ArrayList<>();
+                for (int i = 0; i < storedFiles.size(); i++) {
+                    FileStoragePort.StoredFileInfo fileInfo = storedFiles.get(i);
+
+                    FindImage image = new FindImage();
+                    image.setFindId(saved.getId());
+                    image.setFilename(fileInfo.filename());
+                    image.setOriginalFilename(fileInfo.originalFilename());
+                    image.setFilePath(fileInfo.filePath());
+                    image.setFileSize(fileInfo.fileSize());
+                    image.setMimeType(fileInfo.mimeType());
+                    image.setDisplayOrder(i);
+                    image.setIsPrimary(i == 0);
+
+                    findImages.add(image);
+                }
+
+                findImageRepository.saveAll(findImages);
+
+            } catch (FileStoragePort.FileStorageException e) {
+                throw new RuntimeException("Error al guardar las imágenes: " + e.getMessage(), e);
+            }
+        }
+
         return toDto(saved, reporter);
+    }
+
+    private void validateImages(List<MultipartFile> images) {
+        if (images.size() > 10) {
+            throw new IllegalArgumentException("Máximo 10 imágenes permitidas");
+        }
+
+        for (MultipartFile image : images) {
+            if (image.isEmpty()) {
+                throw new IllegalArgumentException("Una de las imágenes está vacía");
+            }
+
+            if (image.getSize() > 10 * 1024 * 1024) {
+                throw new IllegalArgumentException("Imagen excede el tamaño máximo de 10MB");
+            }
+
+            String contentType = image.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("Solo se permiten archivos de imagen");
+            }
+        }
     }
 
     @Override
@@ -218,6 +293,17 @@ public class FindServiceImpl implements FindService {
                 .map(this::toDtoWithReporter)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public String analyzeImagesWithAi(List<MultipartFile> images) {
+        try {
+            return aiAnalysisPort.analyzeImages(images);
+        } catch (AiAnalysisException e) {
+            throw new RuntimeException("Error al analizar imágenes con IA: " + e.getMessage(), e);
+        }
+    }
+
+
 
     private boolean canAccessFind(Find find, Member user) {
         return switch (user.getRole()) {

@@ -1,13 +1,14 @@
 package es.marcos.digreport.application.port.in;
 
 import es.marcos.digreport.application.dto.find.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface FindService {
 
-    FindDto createFind(String reporterEmail, CreateFindRequest request);
+    FindDto createFind(String reporterEmail, CreateFindRequest request, List<MultipartFile> images);
 
     List<FindDto> getMyFinds(String reporterEmail);
 
@@ -26,5 +27,7 @@ public interface FindService {
     int getPendingCount();
 
     List<FindDto> getMyValidatedFinds(String archaeologistEmail);
+
+    String analyzeImagesWithAi(List<MultipartFile> multipartFiles);
 
 }

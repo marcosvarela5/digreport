@@ -20,6 +20,8 @@ public class FindMapper {
                 .findPriority(find.getFindPriority())
                 .ccaa(find.getCcaa())
                 .validatedBy(find.getValidatedBy())
+                .descriptionGeneratedByAi(find.getDescriptionGeneratedByAi())
+                .aiAnalysisJson(find.getAiAnalysisJson())
                 .build();
     }
 
@@ -39,6 +41,9 @@ public class FindMapper {
 
         find.setStatus(entity.getStatus());
         find.setFindPriority(entity.getFindPriority());
+
+        find.setDescriptionGeneratedByAi(entity.getDescriptionGeneratedByAi());
+        find.setAiAnalysisJson(entity.getAiAnalysisJson());
 
         return find;
     }
