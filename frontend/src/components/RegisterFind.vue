@@ -8,6 +8,54 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="register-find-form">
+        <!-- ===== SECCIÓN DE IMÁGENES ===== -->
+        <div class="form-section">
+          <h3 class="section-title">Imágenes del hallazgo</h3>
+
+          <div class="image-upload-area">
+            <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                multiple
+                @change="handleImageSelect"
+                style="display: none"
+            />
+
+            <button
+                type="button"
+                class="btn-upload"
+                @click="$refs.fileInput.click()"
+                :disabled="uploadedImages.length >= 10"
+            >
+              📸 Seleccionar imágenes (máx. 10)
+            </button>
+
+            <p class="upload-hint">Formatos: JPG, PNG, WebP • Máximo 10MB por imagen</p>
+          </div>
+
+          <!-- Preview de imágenes -->
+          <div v-if="uploadedImages.length > 0" class="images-preview">
+            <div
+                v-for="(img, index) in uploadedImages"
+                :key="index"
+                class="image-preview-item"
+            >
+              <img :src="img.preview" :alt="`Imagen ${index + 1}`" />
+              <button
+                  type="button"
+                  class="btn-remove-image"
+                  @click="removeImage(index)"
+                  title="Eliminar imagen"
+              >
+                ✕
+              </button>
+              <span class="image-number">{{ index + 1 }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SECCIÓN DE INFORMACIÓN ===== -->
         <div class="form-section">
           <h3 class="section-title">Información del hallazgo</h3>
 
@@ -75,11 +123,55 @@
 
           <div class="form-group">
             <label for="description" class="form-label">Descripción del hallazgo *</label>
+
+            <!-- Botón generador de IA -->
+            <div v-if="canShowIAButton" class="ia-suggestion-box">
+              <div class="ia-suggestion-content">
+                <span class="ia-icon">🤖</span>
+                <span class="ia-text">
+                  ¿Quieres que la IA analice las imágenes y sugiera una descripción?
+                </span>
+              </div>
+              <button
+                  type="button"
+                  :disabled="iaState.isGenerating"
+                  class="btn-generar-ia"
+                  @click="handleGenerateIA"
+              >
+                <span v-if="!iaState.isGenerating">✨ Generar con IA</span>
+                <span v-else class="generating-content">
+                  <span class="spinner"></span>
+                  Analizando...
+                </span>
+              </button>
+            </div>
+
+            <!-- Badge de IA generada -->
+            <div v-if="iaState.isGenerated" class="ia-badge-generated">
+              <div class="ia-badge-content">
+                <span class="ia-badge-icon">🤖</span>
+                <span class="ia-badge-text">
+                  Descripción generada por IA - Revisa y edita antes de guardar
+                </span>
+              </div>
+              <button
+                  type="button"
+                  class="ia-badge-discard"
+                  title="Descartar y escribir manualmente"
+                  @click="handleDiscardIA"
+              >
+                ✕
+              </button>
+            </div>
+
             <textarea
                 id="description"
                 v-model="form.description"
                 class="form-textarea"
-                :class="{ error: errors.description }"
+                :class="{
+                error: errors.description,
+                'textarea-ia-generated': iaState.isGenerated
+              }"
                 placeholder="Describe el hallazgo con el mayor detalle posible: tipo de objeto, material, dimensiones aproximadas, contexto del descubrimiento..."
                 rows="6"
                 maxlength="1000"
@@ -90,6 +182,53 @@
               {{ form.description.length }} / 1000 caracteres
             </div>
             <span v-if="errors.description" class="form-error">{{ errors.description }}</span>
+
+            <!-- Análisis detallado de IA -->
+            <details v-if="iaState.analysis" class="ia-analysis-details">
+              <summary>📊 Ver análisis detallado de la IA</summary>
+              <div class="ia-analysis-content">
+                <div class="analysis-grid">
+                  <div class="analysis-item">
+                    <strong>Tipo probable:</strong>
+                    <span>{{ iaState.analysis.tipo_probable }}</span>
+                  </div>
+                  <div class="analysis-item">
+                    <strong>Material estimado:</strong>
+                    <span>{{ iaState.analysis.material_estimado }}</span>
+                  </div>
+                  <div class="analysis-item">
+                    <strong>Período estimado:</strong>
+                    <span>{{ iaState.analysis.periodo_estimado }}</span>
+                  </div>
+                  <div class="analysis-item">
+                    <strong>Nivel de confianza:</strong>
+                    <div class="confidence-bar">
+                      <div
+                          class="confidence-fill"
+                          :style="{ width: confidencePercentage + '%' }"
+                      />
+                      <span class="confidence-text">
+                        {{ confidencePercentage }}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="iaState.analysis.caracteristicas_clave?.length" class="caracteristicas-box">
+                  <strong>Características detectadas:</strong>
+                  <ul>
+                    <li v-for="(car, idx) in iaState.analysis.caracteristicas_clave" :key="idx">
+                      {{ car }}
+                    </li>
+                  </ul>
+                </div>
+
+                <div v-if="iaState.analysis.advertencias" class="advertencias-box">
+                  <strong>⚠️ Consideraciones importantes:</strong>
+                  <p>{{ iaState.analysis.advertencias }}</p>
+                </div>
+              </div>
+            </details>
           </div>
         </div>
 
@@ -117,7 +256,7 @@
           <button
               type="submit"
               class="btn btn-primary btn-large"
-              :disabled="isLoading"
+              :disabled="isLoading || uploadedImages.length === 0"
           >
             <span v-if="isLoading" class="loading"></span>
             {{ isLoading ? 'Registrando...' : 'Registrar Hallazgo' }}
@@ -143,6 +282,47 @@ const isGettingLocation = ref(false)
 const error = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
 
+// ===== ESTADO DE IMÁGENES =====
+interface UploadedImage {
+  file: File
+  preview: string
+}
+
+const uploadedImages = ref<UploadedImage[]>([])
+const fileInput = ref<HTMLInputElement | null>(null)
+
+// ===== ESTADO DE IA =====
+interface IAAnalysis {
+  tipo_probable: string
+  material_estimado: string
+  periodo_estimado: string
+  confianza: number
+  caracteristicas_clave: string[]
+  descripcion: string
+  advertencias?: string
+}
+
+interface IAState {
+  isGenerating: boolean
+  isGenerated: boolean
+  analysis: IAAnalysis | null
+}
+
+const iaState = reactive<IAState>({
+  isGenerating: false,
+  isGenerated: false,
+  analysis: null
+})
+
+const confidencePercentage = computed(() =>
+    iaState.analysis ? Math.round(iaState.analysis.confianza * 100) : 0
+)
+
+const canShowIAButton = computed(() =>
+    uploadedImages.value.length > 0 && !form.description && !iaState.isGenerated
+)
+
+// ===== FORMULARIO =====
 interface FindForm {
   discoveredAt: string
   latitude: number | null
@@ -171,6 +351,93 @@ const maxDate = computed(() => {
   return now.toISOString().slice(0, 16)
 })
 
+// ===== MANEJO DE IMÁGENES =====
+const handleImageSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+
+  if (!files) return
+
+  const newImages = Array.from(files).slice(0, 10 - uploadedImages.value.length)
+
+  newImages.forEach(file => {
+    // Validar tamaño
+    if (file.size > 10 * 1024 * 1024) {
+      error.value = `La imagen ${file.name} excede el tamaño máximo de 10MB`
+      return
+    }
+
+    // Validar tipo
+    if (!file.type.startsWith('image/')) {
+      error.value = `${file.name} no es una imagen válida`
+      return
+    }
+
+    // Crear preview
+    const preview = URL.createObjectURL(file)
+    uploadedImages.value.push({ file, preview })
+  })
+
+  // Limpiar error si todo OK
+  if (newImages.length > 0 && !error.value) {
+    error.value = null
+  }
+
+  // Reset input
+  if (target) target.value = ''
+}
+
+const removeImage = (index: number) => {
+  const img = uploadedImages.value[index]
+  URL.revokeObjectURL(img.preview)
+  uploadedImages.value.splice(index, 1)
+
+  // Si borramos todas, resetear IA
+  if (uploadedImages.value.length === 0) {
+    iaState.isGenerated = false
+    iaState.analysis = null
+    form.description = ''
+  }
+}
+
+// ===== GENERAR DESCRIPCIÓN CON IA =====
+const handleGenerateIA = async () => {
+  try {
+    iaState.isGenerating = true
+    error.value = null
+
+    const formData = new FormData()
+    uploadedImages.value.forEach(img => {
+      formData.append('imagenes', img.file)
+    })
+
+    const response = await apiClient.post('/api/finds/analyze-with-ai', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    iaState.analysis = response.data
+    form.description = response.data.descripcion
+    iaState.isGenerated = true
+
+  } catch (err: any) {
+    error.value = err.response?.data?.message || 'Error al generar descripción con IA'
+    console.error('Error IA:', err)
+  } finally {
+    iaState.isGenerating = false
+  }
+}
+
+const handleDiscardIA = () => {
+  if (confirm('¿Estás seguro de que quieres descartar la descripción generada por IA?')) {
+    form.description = ''
+    iaState.isGenerated = false
+    iaState.analysis = null
+  }
+}
+
+// ===== GEOLOCALIZACIÓN =====
 const getCurrentLocation = () => {
   if (!navigator.geolocation) {
     error.value = 'Tu navegador no soporta geolocalización'
@@ -188,7 +455,6 @@ const getCurrentLocation = () => {
         clearFieldError('longitude')
 
         await fetchCcaaFromCoordinates(form.latitude, form.longitude)
-
         isGettingLocation.value = false
       },
       (err) => {
@@ -202,11 +468,7 @@ const fetchCcaaFromCoordinates = async (lat: number, lon: number) => {
   try {
     const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=5&addressdetails=1`,
-        {
-          headers: {
-            'Accept-Language': 'es'
-          }
-        }
+        { headers: { 'Accept-Language': 'es' } }
     )
 
     const data = await response.json()
@@ -221,6 +483,7 @@ const fetchCcaaFromCoordinates = async (lat: number, lon: number) => {
   }
 }
 
+// ===== VALIDACIONES =====
 const validateField = (field: keyof typeof errors) => {
   switch(field) {
     case 'discoveredAt':
@@ -298,9 +561,15 @@ const validateForm = () => {
     isValid = false
   }
 
+  if (uploadedImages.value.length === 0) {
+    error.value = 'Debes subir al menos una imagen del hallazgo'
+    isValid = false
+  }
+
   return isValid
 }
 
+// ===== SUBMIT =====
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
@@ -315,15 +584,32 @@ const handleSubmit = async () => {
       await fetchCcaaFromCoordinates(form.latitude, form.longitude)
     }
 
-    const payload = {
+    // Crear FormData con toda la información
+    const formData = new FormData()
+
+    // Datos del hallazgo (como JSON)
+    const findData = {
       discoveredAt: form.discoveredAt,
       latitude: form.latitude,
       longitude: form.longitude,
       description: form.description.trim(),
-      ccaa: form.ccaa || 'Desconocida'
+      ccaa: form.ccaa || 'Desconocida',
+      descriptionGeneratedByAi: iaState.isGenerated,
+      aiAnalysisJson: iaState.isGenerated ? JSON.stringify(iaState.analysis) : null
     }
 
-    await apiClient.post('/api/finds', payload)
+    formData.append('data', new Blob([JSON.stringify(findData)], { type: 'application/json' }))
+
+    // Imágenes
+    uploadedImages.value.forEach(img => {
+      formData.append('images', img.file)
+    })
+
+    await apiClient.post('/api/finds', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
 
     successMessage.value = '✓ Hallazgo registrado correctamente'
 
@@ -340,6 +626,7 @@ const handleSubmit = async () => {
 
 const clearFieldError = (field: keyof typeof errors) => {
   errors[field] = ''
+  error.value = null
 }
 
 onMounted(() => {

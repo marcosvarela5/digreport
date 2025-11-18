@@ -363,6 +363,7 @@ import UserMenu from './UserMenu.vue'
 import logoDigreport from '../assets/logodigreport.png'
 import {apiClient} from "@/services/api.ts";
 import './Home.css'
+import './common/theme.css'
 
 const stats = ref({
   totalFinds: 0,

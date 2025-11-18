@@ -4,7 +4,7 @@ import type { AxiosError, AxiosResponse } from 'axios'
 // Configuración base de axios
 export const apiClient = axios.create({
     baseURL: 'http://localhost:8080',
-    timeout: 10000,
+    timeout: 60000,
     headers: {
         'Content-Type': 'application/json',
     },
