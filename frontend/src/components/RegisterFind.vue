@@ -28,7 +28,7 @@
                 @click="$refs.fileInput.click()"
                 :disabled="uploadedImages.length >= 10"
             >
-              📸 Seleccionar imágenes (máx. 10)
+              Seleccionar imágenes (máx. 10)
             </button>
 
             <p class="upload-hint">Formatos: JPG, PNG, WebP • Máximo 10MB por imagen</p>
@@ -127,7 +127,7 @@
             <!-- Botón generador de IA -->
             <div v-if="canShowIAButton" class="ia-suggestion-box">
               <div class="ia-suggestion-content">
-                <span class="ia-icon">🤖</span>
+                <img :src="logoDigreport" alt="IA" class="ia-logo" />
                 <span class="ia-text">
                   ¿Quieres que la IA analice las imágenes y sugiera una descripción?
                 </span>
@@ -138,7 +138,7 @@
                   class="btn-generar-ia"
                   @click="handleGenerateIA"
               >
-                <span v-if="!iaState.isGenerating">✨ Generar con IA</span>
+                <span v-if="!iaState.isGenerating"> Generar con IA</span>
                 <span v-else class="generating-content">
                   <span class="spinner"></span>
                   Analizando...
@@ -149,7 +149,7 @@
             <!-- Badge de IA generada -->
             <div v-if="iaState.isGenerated" class="ia-badge-generated">
               <div class="ia-badge-content">
-                <span class="ia-badge-icon">🤖</span>
+                <img :src="logoDigreport" alt="IA" class="ia-badge-logo" />
                 <span class="ia-badge-text">
                   Descripción generada por IA - Revisa y edita antes de guardar
                 </span>
@@ -158,7 +158,7 @@
                   type="button"
                   class="ia-badge-discard"
                   title="Descartar y escribir manualmente"
-                  @click="handleDiscardIA"
+                  @click="confirmDiscardIA"
               >
                 ✕
               </button>
@@ -233,7 +233,7 @@
         </div>
 
         <div class="info-box">
-          <p><strong>📌 Importante:</strong> Asegúrate de proporcionar información precisa y detallada. Esto ayudará a los arqueólogos a evaluar correctamente el hallazgo.</p>
+          <p><strong> Importante:</strong> Asegúrate de proporcionar información precisa y detallada. Esto ayudará a los arqueólogos a evaluar correctamente el hallazgo.</p>
         </div>
 
         <div v-if="successMessage" class="alert alert-success">
@@ -264,6 +264,19 @@
         </div>
       </form>
     </div>
+
+    <ConfirmationModal
+        :isVisible="confirmModal.show"
+        :title="confirmModal.title"
+        :message="confirmModal.message"
+        :details="confirmModal.details"
+        :confirmText="confirmModal.confirmText"
+        :cancelText="confirmModal.cancelText"
+        :variant="confirmModal.variant"
+        :loading="confirmModal.loading"
+        @confirm="handleModalConfirm"
+        @cancel="handleModalCancel"
+    />
   </div>
 </template>
 
@@ -272,6 +285,8 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { apiClient } from '../services/api'
+import ConfirmationModal from './common/ConfirmationModal.vue'
+import logoDigreport from '../assets/logodigreport.png'
 import './RegisterFind.css'
 
 const router = useRouter()
@@ -312,6 +327,19 @@ const iaState = reactive<IAState>({
   isGenerating: false,
   isGenerated: false,
   analysis: null
+})
+
+// ===== ESTADO DEL MODAL =====
+const confirmModal = ref({
+  show: false,
+  title: '',
+  message: '',
+  details: '',
+  confirmText: 'Aceptar',
+  cancelText: 'Cancelar',
+  variant: 'warning' as 'warning' | 'danger' | 'info' | 'success',
+  loading: false,
+  action: null as string | null
 })
 
 const confidencePercentage = computed(() =>
@@ -361,29 +389,24 @@ const handleImageSelect = (event: Event) => {
   const newImages = Array.from(files).slice(0, 10 - uploadedImages.value.length)
 
   newImages.forEach(file => {
-    // Validar tamaño
     if (file.size > 10 * 1024 * 1024) {
       error.value = `La imagen ${file.name} excede el tamaño máximo de 10MB`
       return
     }
 
-    // Validar tipo
     if (!file.type.startsWith('image/')) {
       error.value = `${file.name} no es una imagen válida`
       return
     }
 
-    // Crear preview
     const preview = URL.createObjectURL(file)
     uploadedImages.value.push({ file, preview })
   })
 
-  // Limpiar error si todo OK
   if (newImages.length > 0 && !error.value) {
     error.value = null
   }
 
-  // Reset input
   if (target) target.value = ''
 }
 
@@ -392,7 +415,6 @@ const removeImage = (index: number) => {
   URL.revokeObjectURL(img.preview)
   uploadedImages.value.splice(index, 1)
 
-  // Si borramos todas, resetear IA
   if (uploadedImages.value.length === 0) {
     iaState.isGenerated = false
     iaState.analysis = null
@@ -429,12 +451,32 @@ const handleGenerateIA = async () => {
   }
 }
 
-const handleDiscardIA = () => {
-  if (confirm('¿Estás seguro de que quieres descartar la descripción generada por IA?')) {
+const confirmDiscardIA = () => {
+  confirmModal.value = {
+    show: true,
+    title: 'Descartar descripción generada por IA',
+    message: '¿Estás seguro de que deseas descartar la descripción generada por la IA?',
+    details: 'Tendrás que escribir la descripción manualmente desde cero.',
+    confirmText: 'Descartar',
+    cancelText: 'Cancelar',
+    variant: 'warning',
+    loading: false,
+    action: 'discard-ia'
+  }
+}
+
+const handleModalConfirm = () => {
+  if (confirmModal.value.action === 'discard-ia') {
     form.description = ''
     iaState.isGenerated = false
     iaState.analysis = null
   }
+  confirmModal.value.show = false
+}
+
+const handleModalCancel = () => {
+  confirmModal.value.show = false
+  confirmModal.value.action = null
 }
 
 // ===== GEOLOCALIZACIÓN =====
@@ -584,10 +626,8 @@ const handleSubmit = async () => {
       await fetchCcaaFromCoordinates(form.latitude, form.longitude)
     }
 
-    // Crear FormData con toda la información
     const formData = new FormData()
 
-    // Datos del hallazgo (como JSON)
     const findData = {
       discoveredAt: form.discoveredAt,
       latitude: form.latitude,
@@ -600,7 +640,6 @@ const handleSubmit = async () => {
 
     formData.append('data', new Blob([JSON.stringify(findData)], { type: 'application/json' }))
 
-    // Imágenes
     uploadedImages.value.forEach(img => {
       formData.append('images', img.file)
     })

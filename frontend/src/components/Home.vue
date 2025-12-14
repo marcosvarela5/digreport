@@ -14,10 +14,16 @@
               <a href="#inicio" class="nav-link">Inicio</a>
               <a href="#sobre-proyecto" class="nav-link">Proyecto</a>
               <a href="#como-funciona" class="nav-link">Cómo funciona</a>
-              <router-link to="/protected-areas" class="nav-link">Zonas protegidas</router-link>
+              <router-link
+                  v-if="authStore.isAuthority"
+                  to="/protected-areas"
+                  class="nav-link-adm"
+              >
+                Zonas protegidas
+              </router-link>
 
               <template v-if="authStore.isAuthenticated">
-                <UserMenu />
+                <UserMenu @logout="confirmLogout" />
               </template>
               <template v-else>
                 <a href="/login" class="btn btn-primary">Iniciar sesión</a>
@@ -39,10 +45,18 @@
           <a href="#inicio" class="mobile-link" @click="toggleMenu">Inicio</a>
           <a href="#sobre-proyecto" class="mobile-link" @click="toggleMenu">El proyecto</a>
           <a href="#como-funciona" class="mobile-link" @click="toggleMenu">Cómo funciona</a>
+          <router-link
+              v-if="authStore.isAuthority"
+              to="/protected-areas"
+              class="mobile-link"
+              @click="toggleMenu"
+          >
+            Zonas protegidas
+          </router-link>
 
           <template v-if="authStore.isAuthenticated">
             <router-link to="/profile" class="mobile-link" @click="toggleMenu">Perfil</router-link>
-            <button @click="handleLogout" class="mobile-link logout">Cerrar sesión</button>
+            <button @click="confirmLogout" class="mobile-link logout">Cerrar sesión</button>
           </template>
           <template v-else>
             <router-link to="/login" class="mobile-link primary" @click="toggleMenu">Iniciar sesión</router-link>
@@ -60,7 +74,6 @@
             <img :src="logoDigreport" alt="DIGREPORT" class="card-icon-img">
           </div>
 
-          <!-- 🆕 TOP CONTRIBUIDORES -->
           <div class="top-contributors" v-if="!rankingLoading && topContributors.length > 0">
             <h4 class="contributors-title">Mejores DIGREPORTERS</h4>
             <div class="contributors-list">
@@ -70,9 +83,9 @@
                   class="contributor-item"
               >
                 <div class="contributor-rank">
-                  <span class="rank-medal" v-if="index === 0"></span>
-                  <span class="rank-medal" v-else-if="index === 1"></span>
-                  <span class="rank-medal" v-else-if="index === 2"></span>
+                  <span class="rank-medal" v-if="index === 0">🥇</span>
+                  <span class="rank-medal" v-else-if="index === 1">🥈</span>
+                  <span class="rank-medal" v-else-if="index === 2">🥉</span>
                   <span class="rank-number" v-else>{{ index + 1 }}</span>
                 </div>
                 <div class="contributor-info">
@@ -87,7 +100,6 @@
             </div>
           </div>
 
-          <!-- Loading para ranking -->
           <div class="contributors-loading" v-if="rankingLoading">
             <div class="loading-spinner"></div>
             <p>Cargando ranking...</p>
@@ -107,16 +119,15 @@
         </p>
         <div class="hero-actions">
           <router-link to="/register-find" class="btn btn-primary btn-large">
-            <span class="btn-icon">📍</span>
+            <span class="btn-icon"></span>
             Registrar Hallazgo
           </router-link>
           <a href="#sobre-proyecto" class="btn btn-outline btn-large">
-            <span class="btn-icon">📖</span>
+            <span class="btn-icon"></span>
             Conocer Más
           </a>
         </div>
 
-        <!-- 🆕 ESTADÍSTICAS -->
         <div class="hero-stats" v-if="!statsLoading">
           <div class="stat">
             <span class="stat-number">+{{ stats.totalFinds }}</span>
@@ -352,6 +363,19 @@
         </div>
       </div>
     </footer>
+
+    <ConfirmationModal
+        :isVisible="confirmModal.show"
+        :title="confirmModal.title"
+        :message="confirmModal.message"
+        :details="confirmModal.details"
+        :confirmText="confirmModal.confirmText"
+        :cancelText="confirmModal.cancelText"
+        :variant="confirmModal.variant"
+        :loading="confirmModal.loading"
+        @confirm="handleModalConfirm"
+        @cancel="handleModalCancel"
+    />
   </div>
 </template>
 
@@ -360,8 +384,9 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import UserMenu from './UserMenu.vue'
+import ConfirmationModal from './common/ConfirmationModal.vue'
 import logoDigreport from '../assets/logodigreport.png'
-import {apiClient} from "@/services/api.ts";
+import {apiClient} from "@/services/api.ts"
 import './Home.css'
 
 const stats = ref({
@@ -381,10 +406,21 @@ const topContributors = ref<Array<{
 const statsLoading = ref(true)
 const rankingLoading = ref(true)
 
+const confirmModal = ref({
+  show: false,
+  title: '',
+  message: '',
+  details: '',
+  confirmText: 'Aceptar',
+  cancelText: 'Cancelar',
+  variant: 'warning' as 'warning' | 'danger' | 'info' | 'success',
+  loading: false
+})
+
 const loadTopContributors = async () => {
   try {
     rankingLoading.value = true
-    const response = await apiClient.get('/api/members/ranking/public?limit=5')
+    const response = await apiClient.get('/api/members/ranking/public?limit=20')
     topContributors.value = response.data
   } catch (error) {
     console.error('Error cargando ranking:', error)
@@ -403,8 +439,8 @@ const loadStats = async () => {
       totalFinds: response.data.totalFinds || 0,
       totalArchaeologists: response.data.totalArchaeologists || 0,
       validationRate: response.data.validationRate || 0,
-      totalCitizens: response.data.totalCitizens || 0,      // 🆕
-      pendingFinds: response.data.pendingFinds || 0         // 🆕
+      totalCitizens: response.data.totalCitizens || 0,
+      pendingFinds: response.data.pendingFinds || 0
     }
   } catch (error) {
     console.error('Error cargando estadísticas:', error)
@@ -428,10 +464,28 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-const handleLogout = () => {
-  authStore.logout()
+function confirmLogout() {
+  confirmModal.value = {
+    show: true,
+    title: 'Cerrar sesión',
+    message: '¿Estás seguro de que deseas cerrar sesión?',
+    details: 'Tendrás que volver a iniciar sesión para acceder a tu cuenta.',
+    confirmText: 'Cerrar sesión',
+    cancelText: 'Cancelar',
+    variant: 'warning',
+    loading: false
+  }
   isMenuOpen.value = false
+}
+
+const handleModalConfirm = () => {
+  authStore.logout()
+  confirmModal.value.show = false
   router.push('/')
+}
+
+const handleModalCancel = () => {
+  confirmModal.value.show = false
 }
 
 onMounted(() => {

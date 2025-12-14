@@ -63,12 +63,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { apiClient } from '../services/api'
 import './UserMenu.css'
 
-const router = useRouter()
+const emit = defineEmits(['logout'])
+
 const authStore = useAuthStore()
 const showMenu = ref(false)
 const pendingCount = ref(0)
@@ -105,9 +105,8 @@ const userRoleClass = computed(() => {
 })
 
 const handleLogout = () => {
-  authStore.logout()
   showMenu.value = false
-  router.push('/')
+  emit('logout')
 }
 
 const loadPendingCount = async () => {

@@ -4,17 +4,17 @@
     <div class="protected-areas-header">
 
       <div class="header-content">
-        <h2>🗺️ Zonas Protegidas</h2>
+        <h2>🗺 Zonas Protegidas</h2>
         <p class="subtitle">Monumentos y áreas arqueológicas bajo protección</p>
         <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
       </div>
 
       <div class="map-controls" v-if="isAuthority">
         <button @click="startDrawingMonument" class="map-btn map-btn-primary">
-          📍 Añadir Monumento
+           Añadir Monumento
         </button>
         <button @click="startDrawingArea" class="map-btn map-btn-secondary">
-          🗺️ Añadir Área Protegida
+          🗺 Añadir Área Protegida
         </button>
       </div>
     </div>

@@ -181,7 +181,7 @@
         </div>
 
         <div class="modal-body">
-          <form @submit.prevent="handleValidate">
+          <form @submit.prevent="showConfirmation">
             <div class="form-group">
               <label class="form-label">Decisión *</label>
               <div class="radio-group">
@@ -224,18 +224,30 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" @click="closeModal" class="btn btn-outline" :disabled="isValidating">
+              <button type="button" @click="closeModal" class="btn btn-outline">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary" :disabled="isValidating || !validationForm.status">
-                <span v-if="isValidating" class="loading"></span>
-                {{ isValidating ? 'Procesando...' : 'Confirmar' }}
+              <button type="submit" class="btn btn-primary" :disabled="!validationForm.status">
+                Continuar
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
+
+    <ConfirmationModal
+        :isVisible="confirmModal.show"
+        :title="confirmModal.title"
+        :message="confirmModal.message"
+        :details="confirmModal.details"
+        :confirmText="confirmModal.confirmText"
+        :cancelText="confirmModal.cancelText"
+        :variant="confirmModal.variant"
+        :loading="confirmModal.loading"
+        @confirm="handleModalConfirm"
+        @cancel="handleModalCancel"
+    />
   </div>
 </template>
 
@@ -244,6 +256,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { apiClient } from '../services/api'
+import ConfirmationModal from './common/ConfirmationModal.vue'
 import './FindDetail.css'
 
 const router = useRouter()
@@ -268,6 +281,17 @@ const validationForm = ref({
   status: '',
   priority: 'MEDIUM',
   comment: ''
+})
+
+const confirmModal = ref({
+  show: false,
+  title: '',
+  message: '',
+  details: '',
+  confirmText: 'Aceptar',
+  cancelText: 'Cancelar',
+  variant: 'warning' as 'warning' | 'danger' | 'info' | 'success',
+  loading: false
 })
 
 const canValidate = computed(() => {
@@ -469,16 +493,36 @@ const closeModal = () => {
   validationError.value = null
 }
 
-const handleValidate = async () => {
+const showConfirmation = () => {
   if (!validationForm.value.status) {
     validationError.value = 'Debes seleccionar una decisión'
     return
   }
 
-  try {
-    isValidating.value = true
-    validationError.value = null
+  const isValidation = validationForm.value.status === 'VALIDATED'
 
+  confirmModal.value = {
+    show: true,
+    title: isValidation ? 'Confirmar validación' : 'Confirmar rechazo',
+    message: isValidation
+        ? `¿Estás seguro de validar el hallazgo #${find.value.id}?`
+        : `¿Estás seguro de rechazar el hallazgo #${find.value.id}?`,
+    details: isValidation
+        ? `El ciudadano ${find.value.reporterName} será notificado de la validación.`
+        : `El ciudadano ${find.value.reporterName} será notificado del rechazo.`,
+    confirmText: isValidation ? 'Validar hallazgo' : 'Rechazar hallazgo',
+    cancelText: 'Cancelar',
+    variant: isValidation ? 'success' : 'danger',
+    loading: false
+  }
+
+  showModal.value = false
+}
+
+const handleModalConfirm = async () => {
+  confirmModal.value.loading = true
+
+  try {
     const payload: any = {
       status: validationForm.value.status,
       priority: validationForm.value.priority
@@ -490,14 +534,21 @@ const handleValidate = async () => {
 
     await apiClient.put(`/api/finds/${find.value.id}/validate`, payload)
 
-    closeModal()
+    confirmModal.value.show = false
     router.push('/validate-finds')
 
   } catch (err: any) {
+    confirmModal.value.show = false
     validationError.value = err.response?.data?.message || 'Error al validar el hallazgo'
+    showModal.value = true
   } finally {
-    isValidating.value = false
+    confirmModal.value.loading = false
   }
+}
+
+const handleModalCancel = () => {
+  confirmModal.value.show = false
+  showModal.value = true
 }
 
 onMounted(() => {

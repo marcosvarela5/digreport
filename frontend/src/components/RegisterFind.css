@@ -508,6 +508,12 @@
     margin-top: 0.25rem;
 }
 
+.ia-logo, .ia-badge-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
 /* ===== UBICACIÓN ===== */
 .location-helper {
     margin-bottom: 1.5rem;

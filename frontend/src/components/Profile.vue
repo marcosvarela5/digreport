@@ -7,8 +7,7 @@
         <p class="profile-subtitle">Actualiza tu información personal</p>
       </div>
 
-      <form @submit.prevent="handleSubmit" class="profile-form">
-        <!-- Datos personales -->
+      <form @submit.prevent="showConfirmation" class="profile-form">
         <div class="form-section">
           <h3 class="section-title">Datos personales</h3>
 
@@ -126,7 +125,6 @@
           </div>
         </div>
 
-        <!-- Datos de acceso -->
         <div class="form-section">
           <h3 class="section-title">Datos de acceso</h3>
 
@@ -179,6 +177,19 @@
         </div>
       </form>
     </div>
+
+    <ConfirmationModal
+        :isVisible="confirmModal.show"
+        :title="confirmModal.title"
+        :message="confirmModal.message"
+        :details="confirmModal.details"
+        :confirmText="confirmModal.confirmText"
+        :cancelText="confirmModal.cancelText"
+        :variant="confirmModal.variant"
+        :loading="confirmModal.loading"
+        @confirm="handleModalConfirm"
+        @cancel="handleModalCancel"
+    />
   </div>
 </template>
 
@@ -187,6 +198,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { apiClient } from '../services/api'
+import ConfirmationModal from './common/ConfirmationModal.vue'
 import './Profile.css'
 
 const router = useRouter()
@@ -235,6 +247,17 @@ const errors = reactive({
   ccaa: ''
 })
 
+const confirmModal = ref({
+  show: false,
+  title: '',
+  message: '',
+  details: '',
+  confirmText: 'Aceptar',
+  cancelText: 'Cancelar',
+  variant: 'warning' as 'warning' | 'danger' | 'info' | 'success',
+  loading: false
+})
+
 const hasChanges = computed(() => {
   return Object.keys(form).some(key => {
     const formKey = key as keyof ProfileForm
@@ -243,7 +266,6 @@ const hasChanges = computed(() => {
 })
 
 const validateField = (field: keyof typeof errors) => {
-  // Solo validar si el campo ha sido modificado
   if (form[field] === originalForm[field]) {
     errors[field] = ''
     return
@@ -289,7 +311,6 @@ const validateForm = () => {
 
   let isValid = true
 
-  // Solo validar campos que han cambiado
   if (form.name !== originalForm.name && form.name.trim().length < 2) {
     errors.name = 'El nombre debe tener al menos 2 caracteres'
     isValid = false
@@ -318,7 +339,7 @@ const validateForm = () => {
   return isValid
 }
 
-const handleSubmit = async () => {
+const showConfirmation = () => {
   if (!validateForm()) {
     return
   }
@@ -328,12 +349,42 @@ const handleSubmit = async () => {
     return
   }
 
+  const changedFields: string[] = []
+  Object.keys(form).forEach(key => {
+    const formKey = key as keyof ProfileForm
+    if (form[formKey] !== originalForm[formKey]) {
+      const fieldNames: Record<string, string> = {
+        name: 'Nombre',
+        surname1: 'Primer apellido',
+        surname2: 'Segundo apellido',
+        email: 'Email',
+        dni: 'DNI',
+        mobile: 'Teléfono móvil',
+        ccaa: 'Comunidad Autónoma'
+      }
+      changedFields.push(fieldNames[formKey])
+    }
+  })
+
+  confirmModal.value = {
+    show: true,
+    title: 'Confirmar cambios',
+    message: '¿Deseas guardar los cambios realizados en tu perfil?',
+    details: `Campos modificados: ${changedFields.join(', ')}`,
+    confirmText: 'Guardar cambios',
+    cancelText: 'Cancelar',
+    variant: 'info',
+    loading: false
+  }
+}
+
+const handleModalConfirm = async () => {
+  confirmModal.value.loading = true
+
   try {
-    isLoading.value = true
     error.value = null
     successMessage.value = null
 
-    // Construir objeto solo con campos modificados
     const updateData: Partial<ProfileForm> = {}
 
     Object.keys(form).forEach(key => {
@@ -343,7 +394,6 @@ const handleSubmit = async () => {
       }
     })
 
-    // Normalizar email y DNI si han cambiado
     if (updateData.email) {
       updateData.email = updateData.email.trim().toLowerCase()
     }
@@ -353,24 +403,27 @@ const handleSubmit = async () => {
 
     await apiClient.put('/api/profile', updateData)
 
-    // Actualizar el store con los nuevos datos
     await authStore.checkAuthStatus()
 
-    // Actualizar los valores originales
     Object.assign(originalForm, form)
 
+    confirmModal.value.show = false
     successMessage.value = '✓ Perfil actualizado correctamente'
 
-    // Limpiar mensaje después de 3 segundos
     setTimeout(() => {
       successMessage.value = null
     }, 3000)
 
   } catch (err: any) {
+    confirmModal.value.show = false
     error.value = err.response?.data?.message || 'Error al actualizar el perfil'
   } finally {
-    isLoading.value = false
+    confirmModal.value.loading = false
   }
+}
+
+const handleModalCancel = () => {
+  confirmModal.value.show = false
 }
 
 const clearFieldError = (field: keyof typeof errors) => {
@@ -387,7 +440,6 @@ const loadUserData = () => {
     form.mobile = authStore.user.mobile
     form.ccaa = authStore.user.ccaa
 
-    // Guardar valores originales
     Object.assign(originalForm, form)
   }
 }
