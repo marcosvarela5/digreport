@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Controller para servir archivos subidos (imágenes)
- */
 @RestController
 @RequestMapping("/uploads")
 public class FileController {
@@ -24,20 +21,20 @@ public class FileController {
         this.rootLocation = Paths.get(uploadDir);
     }
 
-    /**
-     * Servir archivo por ruta
-     * Ejemplo: GET /uploads/2025/01/abc123.jpg
-     */
     @GetMapping("/**")
-    public ResponseEntity<Resource> serveFile(@RequestParam("file") String filename) {
+    public ResponseEntity<Resource> serveFile(
+            @RequestAttribute(value = "org.springframework.web.servlet.HandlerMapping.pathWithinHandlerMapping") String path
+    ) {
         try {
+            // Extraer la ruta después de /uploads/
+            String filePath = path.substring("/uploads/".length());
+
             // Construir la ruta completa
-            Path file = rootLocation.resolve(filename);
+            Path file = rootLocation.resolve(filePath).normalize();
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() && resource.isReadable()) {
-                // Determinar tipo de contenido
-                String contentType = determineContentType(filename);
+                String contentType = determineContentType(filePath);
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(contentType))

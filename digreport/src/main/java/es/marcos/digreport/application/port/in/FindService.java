@@ -30,4 +30,6 @@ public interface FindService {
 
     String analyzeImagesWithAi(List<MultipartFile> multipartFiles);
 
+    List<FindImageDto> getFindImages(Long findId);
+
 }

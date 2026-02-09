@@ -95,7 +95,6 @@ public class GeminiAiAdapter implements AiAnalysisPort {
         }
 
         for (MultipartFile image : images) {
-            // ✅ Usar getSize() en lugar de isEmpty() para evitar consumir el InputStream
             if (image.getSize() == 0) {
                 throw new AiAnalysisException("Una de las imágenes está vacía");
             }

@@ -303,6 +303,28 @@ public class FindServiceImpl implements FindService {
         }
     }
 
+    @Override
+    public List<FindImageDto> getFindImages(Long findId) {
+        return findImageRepository.findByFindId(findId)
+                .stream()
+                .map(this::toImageDto)
+                .toList();
+    }
+
+    private FindImageDto toImageDto(FindImage image) {
+        return new FindImageDto(
+                image.getId(),
+                image.getFindId(),
+                image.getFilename(),
+                image.getOriginalFilename(),
+                image.getFilePath(),
+                image.getFileSize(),
+                image.getMimeType(),
+                image.getDisplayOrder(),
+                image.getIsPrimary()
+        );
+    }
+
 
 
     private boolean canAccessFind(Find find, Member user) {

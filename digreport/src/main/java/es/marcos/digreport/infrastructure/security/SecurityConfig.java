@@ -43,7 +43,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/authorities/**").hasRole(UserRole.AUTHORITY.name())
                         .requestMatchers("api/members/ranking/public/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

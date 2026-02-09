@@ -2,6 +2,7 @@ package es.marcos.digreport.web.controller;
 
 import es.marcos.digreport.application.dto.find.*;
 import es.marcos.digreport.application.port.in.FindService;
+import es.marcos.digreport.domain.model.FindImage;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -148,6 +149,26 @@ public class FindController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @GetMapping("/{id}/images")
+    public ResponseEntity<List<FindImageDto>> getFindImages(@PathVariable Long id) {
+        List<FindImageDto> images = findService.getFindImages(id);
+        return ResponseEntity.ok(images);
+    }
+
+    private FindImageDto toDto(FindImage image) {
+        return new FindImageDto(
+                image.getId(),
+                image.getFindId(),
+                image.getFilename(),
+                image.getOriginalFilename(),
+                image.getFilePath(),
+                image.getFileSize(),
+                image.getMimeType(),
+                image.getDisplayOrder(),
+                image.getIsPrimary()
+        );
     }
 
 }

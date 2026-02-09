@@ -109,6 +109,73 @@
             </div>
           </div>
 
+          <div class="info-section" v-if="images.length > 0">
+            <h2 class="section-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="section-icon">
+                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+              </svg>
+              Imágenes ({{ images.length }})
+            </h2>
+
+            <div v-if="isLoadingImages" class="loading-images">
+              <div class="spinner-small"></div>
+              <p>Cargando imágenes...</p>
+            </div>
+
+            <div v-else class="images-gallery">
+              <div
+                  v-for="(image, index) in images"
+                  :key="image.id"
+                  class="image-card"
+                  :class="{ 'primary': image.isPrimary }"
+                  @click="openImageModal(index)"
+              >
+                <img
+                    :src="getImageUrl(image.filePath)"
+                    :alt="`Imagen ${index + 1}`"
+                    class="gallery-image"
+                />
+                <div v-if="image.isPrimary" class="primary-badge">Principal</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal para ver imagen en grande -->
+          <div v-if="selectedImageIndex !== null" class="image-modal-overlay" @click="closeImageModal">
+            <div class="image-modal-content" @click.stop>
+              <button @click="closeImageModal" class="image-modal-close">&times;</button>
+
+              <div class="image-modal-body">
+                <button
+                    v-if="selectedImageIndex > 0"
+                    @click="previousImage"
+                    class="image-nav-btn prev"
+                >
+                  &#8249;
+                </button>
+
+                <img
+                    :src="getImageUrl(images[selectedImageIndex].filePath)"
+                    :alt="`Imagen ${selectedImageIndex + 1}`"
+                    class="modal-image"
+                />
+
+                <button
+                    v-if="selectedImageIndex < images.length - 1"
+                    @click="nextImage"
+                    class="image-nav-btn next"
+                >
+                  &#8250;
+                </button>
+              </div>
+
+              <div class="image-modal-footer">
+                <span class="image-counter">{{ selectedImageIndex + 1 }} / {{ images.length }}</span>
+                <span class="image-info">{{ images[selectedImageIndex].originalFilename }}</span>
+              </div>
+            </div>
+          </div>
+
           <div class="info-section" v-if="comments.length > 0 || canComment">
             <h2 class="section-title">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="section-icon">
@@ -283,6 +350,53 @@ const validationForm = ref({
   comment: ''
 })
 
+const images = ref<any[]>([])
+const isLoadingImages = ref(false)
+const selectedImageIndex = ref<number | null>(null)
+
+
+const getImageUrl = (filePath: string) => {
+
+  return `http://localhost:8080/uploads/${filePath}`
+}
+
+const openImageModal = (index: number) => {
+  selectedImageIndex.value = index
+}
+
+const closeImageModal = () => {
+  selectedImageIndex.value = null
+}
+
+const nextImage = () => {
+  if (selectedImageIndex.value !== null && selectedImageIndex.value < images.value.length - 1) {
+    selectedImageIndex.value++
+  }
+}
+
+const previousImage = () => {
+  if (selectedImageIndex.value !== null && selectedImageIndex.value > 0) {
+    selectedImageIndex.value--
+  }
+}
+
+// Función para cargar imágenes
+const loadImages = async () => {
+  try {
+    isLoadingImages.value = true
+    const response = await apiClient.get(`/api/finds/${route.params.id}/images`)
+    images.value = response.data
+
+    // DEBUGGING: Ver qué contiene la respuesta
+    console.log('Imágenes recibidas:', response.data)
+
+  } catch (err) {
+    console.error('Error al cargar imágenes:', err)
+  } finally {
+    isLoadingImages.value = false
+  }
+}
+
 const confirmModal = ref({
   show: false,
   title: '',
@@ -335,6 +449,7 @@ const loadFind = async () => {
 
     await loadLocationName(find.value.latitude, find.value.longitude)
     await loadComments()
+    await loadImages()
 
   } catch (err: any) {
     if (err.response?.status === 404) {
