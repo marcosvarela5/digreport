@@ -54,7 +54,7 @@
     <div class="authority-dashboard">
       <div class="dashboard-header">
         <h1 class="page-title">
-          {{ activeTab === 'overview' ? 'Resumen General' : activeTab === 'finds' ? 'Todos los Hallazgos' : 'Gestión de Usuarios' }}
+          {{ activeTab === 'overview' ? 'Resumen heneral' : activeTab === 'finds' ? 'Todos los hallazgos' : 'Gestión de usuarios' }}
         </h1>
         <p class="page-subtitle">
           {{ activeTab === 'overview' ? 'Estadísticas globales del sistema' : activeTab === 'finds' ? 'Listado completo de hallazgos reportados' : 'Información de todos los usuarios registrados' }}

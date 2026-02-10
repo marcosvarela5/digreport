@@ -3,7 +3,7 @@
     <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
     <div class="register-find-card">
       <div class="register-find-header">
-        <h1 class="register-find-title">Registrar Hallazgo</h1>
+        <h1 class="register-find-title">Registrar hallazgo</h1>
         <p class="register-find-subtitle">Ayuda a preservar nuestro patrimonio histórico</p>
       </div>
 
@@ -259,7 +259,7 @@
               :disabled="isLoading || uploadedImages.length === 0"
           >
             <span v-if="isLoading" class="loading"></span>
-            {{ isLoading ? 'Registrando...' : 'Registrar Hallazgo' }}
+            {{ isLoading ? 'Registrando...' : 'Registrar hallazgo' }}
           </button>
         </div>
       </form>

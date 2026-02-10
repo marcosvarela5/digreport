@@ -4,17 +4,17 @@
     <div class="protected-areas-header">
 
       <div class="header-content">
-        <h2>🗺 Zonas Protegidas</h2>
+        <h2>🗺 Zonas protegidas</h2>
         <p class="subtitle">Monumentos y áreas arqueológicas bajo protección</p>
         <router-link to="/" class="back-link">⬅ Volver al inicio</router-link>
       </div>
 
       <div class="map-controls" v-if="isAuthority">
         <button @click="startDrawingMonument" class="map-btn map-btn-primary">
-           Añadir Monumento
+           Añadir monumento
         </button>
         <button @click="startDrawingArea" class="map-btn map-btn-secondary">
-          🗺 Añadir Área Protegida
+          🗺 Añadir área protegida
         </button>
       </div>
     </div>
@@ -25,7 +25,7 @@
     <!-- Modal -->
     <div v-if="showModal" class="protected-areas-modal-overlay" @click="closeModal">
       <div class="protected-areas-modal-content" @click.stop>
-        <h3>{{ isEditMode ? 'Editar' : 'Nueva' }} Zona Protegida</h3>
+        <h3>{{ isEditMode ? 'Editar' : 'Nueva' }} Zona protegida</h3>
 
         <form @submit.prevent="saveProtectedArea">
           <div class="protected-areas-form-group">
@@ -81,7 +81,7 @@
 
             <!-- 🆕 NUEVO: Select de tipo de protección -->
             <div class="protected-areas-form-group">
-              <label>Tipo de Protección *</label>
+              <label>Tipo de protección *</label>
               <select
                   v-model="formData.protectionType"
                   class="protected-areas-select"
@@ -339,7 +339,7 @@ const addAreaToMap = (area: any) => {
         <h4 style="margin: 0 0 8px 0; color: #2c3e50;">${area.name}</h4>
         ${area.description ? `<p style="margin: 0 0 8px 0; font-size: 14px;">${area.description}</p>` : ''}
         <div style="font-size: 12px; color: #7f8c8d;">
-          <strong>Tipo:</strong> ${area.type === 'MONUMENT' ? '📍 Monumento' : '🗺️ Área Protegida'}<br>
+          <strong>Tipo:</strong> ${area.type === 'MONUMENT' ? '📍 Monumento' : '🗺️ Espacio protegido'}<br>
           <strong>Protección:</strong> ${getProtectionTypeLabel(area.protectionType)}<br>
           ${area.ccaa ? `<strong>CCAA:</strong> ${area.ccaa}<br>` : ''}
           <strong>Fecha:</strong> ${new Date(area.createdAt).toLocaleDateString('es-ES')}
